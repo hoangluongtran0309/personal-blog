@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <div th:fragment="header(activePage)">
+    <header id="page-header" class="flex flex-none flex-col gap-6">
+      <div class="flex items-center justify-center gap-2">
+        <a
+          th:href="@{/}"
+          class="flex size-22 items-center justify-center rounded-full bg-radial from-orange-200 to-amber-300 hover:opacity-75 active:opacity-100"
+        >
+          <img
+            src="/assets/photo.jpg"
+            alt="Luong"
+            class="aspect-square size-20 rounded-full object-cover"
+          />
+          <span th:text="#{author}" class="sr-only">Luong</span>
+        </a>
+      </div>
+
+      <div
+        class="mx-auto inline-flex items-center gap-2 rounded-full border border-zinc-100 px-6 py-2.5 dark:border-zinc-800"
+      >
+        <nav class="flex items-center gap-6">
+          <a
+            th:text="#{nav.blog}"
+            th:href="@{/}"
+            th:class="${activePage == 'blog'} ? 'text-sm font-semibold text-black dark:text-white' : 'text-sm font-semibold text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white'"
+          >
+            Blog
+          </a>
+
+          <a
+            th:text="#{nav.projects}"
+            th:href="@{/projects}"
+            th:class="${activePage == 'projects'} ? 'text-sm font-semibold text-black dark:text-white' : 'text-sm font-semibold text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white'"
+          >
+            Projects
+          </a>
+
+          <a
+            th:text="#{nav.contact}"
+            th:href="@{/contact}"
+            th:class="${activePage == 'contact'} ? 'text-sm font-semibold text-black dark:text-white' : 'text-sm font-semibold text-zinc-600 hover:text-black dark:text-zinc-400 dark:hover:text-white'"
+          >
+            Contact
+          </a>
+        </nav>
+      </div>
+    </header>
+  </div>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <div
+    th:fragment="controls"
+    class="bg-white admin-dark:bg-zinc-900 px-4 py-6 flex items-center justify-between border-t border-zinc-200 admin-dark:border-zinc-800 sm:px-6"
+  >
+    <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+      <div>
+        <p class="text-sm text-zinc-500 admin-dark:text-zinc-400">
+          <span th:text="#{showing}">Showing</span>
+          <span
+            class="font-semibold text-zinc-900 admin-dark:text-white"
+            th:text="${(page.getSize() * page.getNumber()) + 1}"
+          >
+            X
+          </span>
+          <span th:text="#{to}">to</span>
+          <span
+            class="font-semibold text-zinc-900 admin-dark:text-white"
+            th:text="${(page.getSize() * page.getNumber()) + page.getNumberOfElements()}"
+          >
+            Y
+          </span>
+          <span th:text="#{of}">of</span>
+          <span
+            class="font-semibold text-zinc-900 admin-dark:text-white"
+            th:text="${page.getTotalElements()}"
+          >
+            Z
+          </span>
+          <span th:text="#{results}">results</span>
+        </p>
+      </div>
+
+      <div>
+        <nav
+          class="relative z-0 inline-flex rounded-md shadow-sm border border-zinc-300 admin-dark:border-zinc-700 overflow-hidden"
+        >
+          <a
+            th:href="${page.isFirst()} ? 'javascript:void(0)' : ${@urlBuilder.replaceQueryParam('page', page.number - 1).toUriString()}"
+            class="inline-flex items-center px-3 py-2 bg-white admin-dark:bg-zinc-800 text-sm font-medium border-r border-zinc-300 admin-dark:border-zinc-700 text-zinc-500 admin-dark:text-zinc-400 hover:text-amber-500 admin-dark:hover:text-amber-400 transition"
+            th:classappend="${page.isFirst() ? 'pointer-events-none opacity-40' : ''}"
+          >
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </a>
+
+          <th:block
+            th:with="
+            startPage=${T(java.lang.Math).max(1, page.getNumber() - 1)},
+            endPage=${T(java.lang.Math).min(startPage + 4, page.getTotalPages())}"
+          >
+            <a
+              th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}"
+              th:href="${@urlBuilder.replaceQueryParam('page', pageNumber - 1).toUriString()}"
+              class="px-4 py-2 text-sm font-medium text-zinc-500 admin-dark:text-zinc-400 hover:text-amber-500 admin-dark:hover:text-amber-400 transition border-r border-zinc-300 admin-dark:border-zinc-700"
+              th:classappend="${page.number == pageNumber - 1} ? 'bg-zinc-100 admin-dark:bg-zinc-800/50 text-amber-600 admin-dark:text-amber-400 font-semibold' : ''"
+            >
+              <span th:text="${pageNumber}"></span>
+            </a>
+          </th:block>
+
+          <a
+            th:href="${page.isLast()} ? 'javascript:void(0)' : ${@urlBuilder.replaceQueryParam('page', page.number + 1).toUriString()}"
+            class="inline-flex items-center px-3 py-2 bg-white admin-dark:bg-zinc-800 text-sm font-medium text-zinc-500 admin-dark:text-zinc-400 hover:text-amber-500 admin-dark:hover:text-amber-400 transition"
+            th:classappend="${page.isLast() ? 'pointer-events-none opacity-40' : ''}"
+          >
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</html>

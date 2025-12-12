@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/main}"
+>
+  <head>
+    <title th:text="#{hero.title.blog}">Welcome to my blog</title>
+  </head>
+
+  <body>
+    <div layout:fragment="content" class="flex grow flex-col gap-16">
+      <div class="text-center">
+        <div
+          th:text="#{hero.badge.blog}"
+          class="mx-auto mb-2 inline-flex rounded-lg bg-zinc-100 px-2.5 py-1 text-sm font-medium text-zinc-500 dark:bg-zinc-800/50 dark:text-zinc-400"
+        >
+          Hello, I'm Luong
+        </div>
+
+        <h1
+          th:text="#{hero.title.blog}"
+          class="text-3xl font-black lg:text-5xl"
+        >
+          Welcome to my blog
+        </h1>
+
+        <h2
+          th:text="#{hero.subtitle.blog}"
+          class="mx-auto mt-5 max-w-2xl leading-relaxed text-balance text-zinc-500 dark:text-zinc-400"
+        >
+          Sharing insights on programming, technology, and product development
+          through my real-world experiences. Join me as I explore the journey of
+          building and optimizing software.
+        </h2>
+      </div>
+
+      <div th:if="${posts != null and !posts.empty}">
+        <div th:replace="~{posts/list :: list}"></div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <div th:fragment="list">
+    <div class="mx-auto flex max-w-xl flex-col gap-12">
+      <div class="group relative" th:each="post : ${posts}">
+        <div
+          class="absolute top-0 bottom-0 -left-4 w-1 rounded-full bg-linear-to-b from-amber-500 to-amber-400 opacity-0 transition duration-200 ease-out group-hover:opacity-100 sm:-left-6"
+        ></div>
+
+        <p class="mb-1 text-sm font-medium text-zinc-600 dark:text-zinc-400">
+          <span
+            th:text="${#strings.capitalize(#temporals.format(post.publishDate, 'MMMM d, yyyy'))}"
+          >
+            MMMM d, YYYY
+          </span>
+          -
+          <span
+            th:text="|${#strings.length(post.postContent) / 1000} #{min-read}|"
+          >
+            X min read
+          </span>
+        </p>
+
+        <h4 class="mb-2 text-lg font-bold sm:text-xl">
+          <a
+            th:href="@{/posts/{id}(id=${post.postId.id})}"
+            class="leading-7 text-zinc-800 hover:text-zinc-600 dark:text-zinc-200 dark:hover:text-zinc-400"
+          >
+            <span th:text="${post.postTitle}"></span>
+          </a>
+        </h4>
+
+        <p
+          class="mb-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400"
+        >
+          <span th:text="${post.postSummary}"></span>
+        </p>
+
+        <a
+          th:text="#{button.read-more}"
+          th:href="@{/posts/{id}(id=${post.postId.id})}"
+          class="text-sm font-medium text-amber-600 hover:text-amber-500 dark:text-amber-400 dark:hover:text-amber-300"
+        >
+          Read more
+        </a>
+      </div>
+
+      <div
+        th:replace="~{fragments/pagination :: controls(page=${posts})}"
+      ></div>
+    </div>
+  </div>
+</html>

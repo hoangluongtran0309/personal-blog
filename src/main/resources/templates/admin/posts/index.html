@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{admin/layout/main}"
+>
+  <head>
+    <title th:text="#{hero.title.admin}">Manage your contents</title>
+  </head>
+
+  <body>
+    <div layout:fragment="content" class="flex grow flex-col gap-16">
+      <div class="text-center">
+        <div
+          th:text="#{hero.badge.admin}"
+          class="mx-auto mb-2 inline-flex rounded-lg bg-zinc-100 px-2.5 py-1 text-sm font-medium text-zinc-500 admin-dark:bg-zinc-800/50 admin-dark:text-zinc-400"
+        >
+          Welcome back, Luong
+        </div>
+
+        <h1
+          th:text="#{hero.title.admin}"
+          class="text-3xl font-black lg:text-5xl admin-dark:text-white"
+        >
+          Manage your contents
+        </h1>
+
+        <h2
+          th:text="#{hero.subtitle.admin}"
+          class="mx-auto mt-5 max-w-2xl leading-relaxed text-balance text-zinc-500 admin-dark:text-zinc-400"
+        >
+          Create, edit, and organize your content with ease.
+        </h2>
+      </div>
+
+      <div class="mx-auto w-full max-w-4xl">
+        <div class="flex items-center justify-between mb-6">
+          <h3
+            th:text="#{list.title.posts}"
+            class="text-xl font-bold admin-dark:text-white"
+          >
+            Post lists
+          </h3>
+
+          <button
+            th:text="#{button.add-new}"
+            hx-get="/new"
+            hx-target="#create-post-form"
+            class="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600 transition-colors"
+          >
+            Add new
+          </button>
+        </div>
+
+        <div id="create-post-form"></div>
+
+        <div th:if="${posts != null and !posts.empty}">
+          <div th:replace="~{admin/posts/list :: list}"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

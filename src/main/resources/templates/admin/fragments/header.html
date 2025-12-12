@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <div th:fragment="header(activePage)">
+    <header
+      id="page-header"
+      class="flex flex-none items-center justify-between py-4"
+    >
+      <div class="flex items-center gap-3">
+        <a
+          th:href="@{/}"
+          class="flex size-12 items-center justify-center rounded-full bg-radial from-orange-200 to-amber-300 hover:opacity-75 active:opacity-100"
+        >
+          <img
+            th:src="@{/assets/photo.jpg}"
+            alt="Luong"
+            class="aspect-square size-11 rounded-full object-cover"
+          />
+          <span th:text="#{author}" class="sr-only">Luong</span>
+        </a>
+
+        <div>
+          <h1
+            th:text="#{admin-panel}"
+            class="text-xl font-bold admin-dark:text-white"
+          >
+            Admin
+          </h1>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <nav class="flex items-center gap-6">
+          <a
+            th:text="#{nav.post}"
+            th:href="@{/admin}"
+            th:class="${activePage == 'posts'} ? 'text-sm font-semibold text-black admin-dark:text-white' : 'text-sm font-semibold text-zinc-600 admin-dark:text-zinc-400 hover:text-black admin-dark:hover:text-white'"
+            class="transition-colors"
+          >
+            Post
+          </a>
+
+          <a
+            th:text="#{nav.projects}"
+            th:href="@{/admin/projects}"
+            th:class="${activePage == 'projects'} ? 'text-sm font-semibold text-black admin-dark:text-white' : 'text-sm font-semibold text-zinc-600 admin-dark:text-zinc-400 hover:text-black admin-dark:hover:text-white'"
+            class="transition-colors"
+          >
+            Projects
+          </a>
+
+          <a
+            th:text="#{nav.contact}"
+            th:href="@{/admin/contacts}"
+            th:class="${activePage == 'contacts'} ? 'text-sm font-semibold text-black admin-dark:text-white' : 'text-sm font-semibold text-zinc-600 admin-dark:text-zinc-400 hover:text-black admin-dark:hover:text-white'"
+            class="transition-colors"
+          >
+            Contact
+          </a>
+        </nav>
+
+        <div class="relative" x-data="{ open: false }">
+          <button
+            @click="open = !open"
+            class="flex items-center gap-2 rounded-lg p-2 hover:bg-zinc-100 admin-dark:hover:bg-zinc-700 transition-colors"
+          >
+            <img
+              th:src="@{/assets/photo.jpg}"
+              alt="Luong"
+              class="size-8 rounded-full object-cover"
+            />
+            <span
+              th:text="#{author}"
+              class="hidden md:inline text-sm font-medium admin-dark:text-zinc-200"
+            >
+              Luong
+            </span>
+            <svg
+              class="h-4 w-4 text-zinc-500 admin-dark:text-zinc-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+
+          <div
+            x-show="open"
+            @click.away="open = false"
+            x-cloak
+            class="absolute right-0 mt-2 w-48 rounded-lg bg-white admin-dark:bg-zinc-800 py-1 shadow-lg border border-zinc-200 admin-dark:border-zinc-700 z-50"
+          >
+            <a
+              th:text="#{button.edit-profile}"
+              href="#"
+              @click="editProfile(); open = false"
+              class="block px-4 py-2 text-sm text-zinc-700 admin-dark:text-zinc-300 hover:bg-zinc-100 admin-dark:hover:bg-zinc-700 transition-colors"
+            >
+              Edit profile
+            </a>
+
+            <a
+              th:text="#{button.logout}"
+              th:href="@{/logout}"
+              class="block px-4 py-2 text-sm text-zinc-700 admin-dark:text-zinc-300 hover:bg-zinc-100 admin-dark:hover:bg-zinc-700 transition-colors"
+            >
+              Log out
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+  </div>
+</html>

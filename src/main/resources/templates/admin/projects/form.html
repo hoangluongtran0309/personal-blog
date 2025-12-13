@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <div th:fragment="form">
+    <div
+      class="mb-8 rounded-3xl border border-zinc-200 admin-dark:border-zinc-700 bg-zinc-50 admin-dark:bg-zinc-800/50 p-6 transition-colors"
+    >
+      <h4 class="mb-4 text-lg font-bold admin-dark:text-white">
+        <span
+          th:text="#{button.add}"
+          th:if="${editMode == T(com.hoangluongtran0309.personal_blog.project.web.EditMode).CREATE}"
+        >
+          Add
+        </span>
+        <span
+          th:text="#{button.update}"
+          th:if="${editMode == T(com.hoangluongtran0309.personal_blog.project.web.EditMode).UPDATE}"
+        >
+          Update
+        </span>
+      </h4>
+
+      <!-- CREATE FORM -->
+      <form
+        th:id="create-form"
+        th:if="${editMode == T(com.hoangluongtran0309.personal_blog.project.web.EditMode).CREATE}"
+        th:object="${project}"
+        th:hx-post="@{/projects}"
+        hx-target="#projects-list"
+        hx-swap="afterbegin"
+        hx-on:htmx:after-request="if (event.detail.successful) { this.reset(); }"
+        class="space-y-4"
+      >
+        <div>
+          <label
+            th:text="#{input.category}"
+            class="block text-sm font-medium mb-1 admin-dark:text-zinc-300"
+          >
+            Category
+          </label>
+          <input
+            type="text"
+            th:field="*{projectCategory}"
+            class="w-full rounded-lg border border-zinc-300 admin-dark:border-zinc-600 bg-white admin-dark:bg-zinc-700 text-zinc-800 admin-dark:text-zinc-200 px-4 py-2 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/50 transition-colors"
+            placeholder="project category"
+            required
+          />
+          <div
+            th:if="${#fields.hasErrors('projectCategory')}"
+            class="text-red-500 text-xs mt-1"
+          >
+            <span
+              th:each="err : ${#fields.errors('projectCategory')}"
+              th:text="${err}"
+            ></span>
+          </div>
+        </div>
+
+        <div>
+          <label
+            th:text="#{input.title}"
+            class="block text-sm font-medium mb-1 admin-dark:text-zinc-300"
+          >
+            Title
+          </label>
+          <input
+            type="text"
+            th:field="*{projectTitle}"
+            class="w-full rounded-lg border border-zinc-300 admin-dark:border-zinc-600 bg-white admin-dark:bg-zinc-700 text-zinc-800 admin-dark:text-zinc-200 px-4 py-2 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/50 transition-colors"
+            placeholder="project title"
+            required
+          />
+          <div
+            th:if="${#fields.hasErrors('projectTitle')}"
+            class="text-red-500 text-xs mt-1"
+          >
+            <span
+              th:each="err : ${#fields.errors('projectTitle')}"
+              th:text="${err}"
+            ></span>
+          </div>
+        </div>
+
+        <div>
+          <label
+            th:text="#{input.summary}"
+            class="block text-sm font-medium mb-1 admin-dark:text-zinc-300"
+          >
+            Summary
+          </label>
+          <textarea
+            th:field="*{projectSummary}"
+            rows="3"
+            class="w-full rounded-lg border border-zinc-300 admin-dark:border-zinc-600 bg-white admin-dark:bg-zinc-700 text-zinc-800 admin-dark:text-zinc-200 px-4 py-2 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/50 transition-colors"
+            placeholder="project summary"
+            required
+          ></textarea>
+          <div
+            th:if="${#fields.hasErrors('projectSummary')}"
+            class="text-red-500 text-xs mt-1"
+          >
+            <span
+              th:each="err : ${#fields.errors('projectSummary')}"
+              th:text="${err}"
+            ></span>
+          </div>
+        </div>
+
+        <div>
+          <label
+            th:text="#{input.content}"
+            class="block text-sm font-medium mb-1 admin-dark:text-zinc-300"
+          >
+            Content
+          </label>
+          <textarea
+            th:field="*{projectContent}"
+            rows="6"
+            class="w-full rounded-lg border border-zinc-300 admin-dark:border-zinc-600 bg-white admin-dark:bg-zinc-700 text-zinc-800 admin-dark:text-zinc-200 px-4 py-2 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/50 transition-colors"
+            placeholder="project content"
+            required
+          ></textarea>
+          <div
+            th:if="${#fields.hasErrors('projectContent')}"
+            class="text-red-500 text-xs mt-1"
+          >
+            <span
+              th:each="err : ${#fields.errors('projectContent')}"
+              th:text="${err}"
+            ></span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label
+              th:text="#{select.publish-date}"
+              class="block text-sm font-medium mb-1 admin-dark:text-zinc-300"
+            >
+              Publish date
+            </label>
+            <input
+              type="date"
+              th:field="*{publishDate}"
+              class="w-full rounded-lg border border-zinc-300 admin-dark:border-zinc-600 bg-white admin-dark:bg-zinc-700 text-zinc-800 admin-dark:text-zinc-200 px-4 py-2 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/50 transition-colors"
+            />
+            <div
+              th:if="${#fields.hasErrors('publishDate')}"
+              class="text-red-500 text-xs mt-1"
+            >
+              <span
+                th:each="err : ${#fields.errors('publishDate')}"
+                th:text="${err}"
+              ></span>
+            </div>
+          </div>
+
+          <div>
+            <label
+              th:text="#{select.status}"
+              class="block text-sm font-medium mb-1 admin-dark:text-zinc-300"
+            >
+              Status
+            </label>
+            <select
+              th:field="*{projectStatus}"
+              class="w-full rounded-lg border border-zinc-300 admin-dark:border-zinc-600 bg-white admin-dark:bg-zinc-700 text-zinc-800 admin-dark:text-zinc-200 px-4 py-2 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/50 transition-colors"
+            >
+              <option
+                th:each="status : ${T(com.hoangluongtran0309.personal_blog.project.ProjectStatus).values()}"
+                th:value="${status.name()}"
+                th:text="${status.getDescription()}"
+              ></option>
+            </select>
+            <div
+              th:if="${#fields.hasErrors('projectStatus')}"
+              class="text-red-500 text-xs mt-1"
+            >
+              <span
+                th:each="err : ${#fields.errors('projectStatus')}"
+                th:text="${err}"
+              ></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap-2">
+          <button
+            th:text="#{button.add}"
+            type="submit"
+            class="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600 transition-colors"
+          >
+            Add
+          </button>
+          <button
+            th:text="#{button.cancel}"
+            type="button"
+            onclick="document.getElementById('create-project-form').innerHTML = ''"
+            class="rounded-lg bg-zinc-200 admin-dark:bg-zinc-700 px-4 py-2 text-sm font-medium text-zinc-700 admin-dark:text-zinc-300 hover:bg-zinc-300 admin-dark:hover:bg-zinc-600 hover:text-amber-600 admin-dark:hover:text-amber-400 transition-colors"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+
+      <!-- EDIT FORM -->
+      <form
+        th:id="edit-form"
+        th:if="${editMode == T(com.hoangluongtran0309.personal_blog.project.web.EditMode).UPDATE}"
+        th:object="${project}"
+        th:hx-post="@{/projects/{id}(id=${project.projectId})}"
+        th:hx-target="|#project-item-${project.projectId}|"
+        hx-swap="innerHTML"
+        class="space-y-4"
+      >
+        <!-- Hidden fields for projectId and version -->
+        <input type="hidden" th:field="*{projectId}" />
+        <input type="hidden" th:field="*{version}" />
+
+        <div>
+          <label
+            th:text="#{input.category}"
+            class="block text-sm font-medium mb-1 admin-dark:text-zinc-300"
+          >
+            Category
+          </label>
+          <input
+            type="text"
+            th:field="*{projectCategory}"
+            class="w-full rounded-lg border border-zinc-300 admin-dark:border-zinc-600 bg-white admin-dark:bg-zinc-700 text-zinc-800 admin-dark:text-zinc-200 px-4 py-2 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/50 transition-colors"
+            placeholder="project category"
+            required
+          />
+          <div
+            th:if="${#fields.hasErrors('projectCategory')}"
+            class="text-red-500 text-xs mt-1"
+          >
+            <span
+              th:each="err : ${#fields.errors('projectCategory')}"
+              th:text="${err}"
+            ></span>
+          </div>
+        </div>
+
+        <div>
+          <label
+            th:text="#{input.title}"
+            class="block text-sm font-medium mb-1 admin-dark:text-zinc-300"
+          >
+            Title
+          </label>
+          <input
+            type="text"
+            th:field="*{projectTitle}"
+            class="w-full rounded-lg border border-zinc-300 admin-dark:border-zinc-600 bg-white admin-dark:bg-zinc-700 text-zinc-800 admin-dark:text-zinc-200 px-4 py-2 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/50 transition-colors"
+            placeholder="project title"
+            required
+          />
+          <div
+            th:if="${#fields.hasErrors('projectTitle')}"
+            class="text-red-500 text-xs mt-1"
+          >
+            <span
+              th:each="err : ${#fields.errors('projectTitle')}"
+              th:text="${err}"
+            ></span>
+          </div>
+        </div>
+
+        <div>
+          <label
+            th:text="#{input.summary}"
+            class="block text-sm font-medium mb-1 admin-dark:text-zinc-300"
+          >
+            Summary
+          </label>
+          <textarea
+            th:field="*{projectSummary}"
+            rows="3"
+            class="w-full rounded-lg border border-zinc-300 admin-dark:border-zinc-600 bg-white admin-dark:bg-zinc-700 text-zinc-800 admin-dark:text-zinc-200 px-4 py-2 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/50 transition-colors"
+            placeholder="project summary"
+            required
+          ></textarea>
+          <div
+            th:if="${#fields.hasErrors('projectSummary')}"
+            class="text-red-500 text-xs mt-1"
+          >
+            <span
+              th:each="err : ${#fields.errors('projectSummary')}"
+              th:text="${err}"
+            ></span>
+          </div>
+        </div>
+
+        <div>
+          <label
+            th:text="#{input.content}"
+            class="block text-sm font-medium mb-1 admin-dark:text-zinc-300"
+          >
+            Content
+          </label>
+          <textarea
+            th:field="*{projectContent}"
+            rows="6"
+            class="w-full rounded-lg border border-zinc-300 admin-dark:border-zinc-600 bg-white admin-dark:bg-zinc-700 text-zinc-800 admin-dark:text-zinc-200 px-4 py-2 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/50 transition-colors"
+            placeholder="project content"
+            required
+          ></textarea>
+          <div
+            th:if="${#fields.hasErrors('projectContent')}"
+            class="text-red-500 text-xs mt-1"
+          >
+            <span
+              th:each="err : ${#fields.errors('projectContent')}"
+              th:text="${err}"
+            ></span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label
+              th:text="#{select.publish-date}"
+              class="block text-sm font-medium mb-1 admin-dark:text-zinc-300"
+            >
+              Publish date
+            </label>
+            <input
+              type="date"
+              th:field="*{publishDate}"
+              class="w-full rounded-lg border border-zinc-300 admin-dark:border-zinc-600 bg-white admin-dark:bg-zinc-700 text-zinc-800 admin-dark:text-zinc-200 px-4 py-2 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/50 transition-colors"
+            />
+            <div
+              th:if="${#fields.hasErrors('publishDate')}"
+              class="text-red-500 text-xs mt-1"
+            >
+              <span
+                th:each="err : ${#fields.errors('publishDate')}"
+                th:text="${err}"
+              ></span>
+            </div>
+          </div>
+
+          <div>
+            <label
+              th:text="#{select.status}"
+              class="block text-sm font-medium mb-1 admin-dark:text-zinc-300"
+            >
+              Status
+            </label>
+            <select
+              th:field="*{projectStatus}"
+              class="w-full rounded-lg border border-zinc-300 admin-dark:border-zinc-600 bg-white admin-dark:bg-zinc-700 text-zinc-800 admin-dark:text-zinc-200 px-4 py-2 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/50 transition-colors"
+            >
+              <option
+                th:each="status : ${T(com.hoangluongtran0309.personal_blog.project.ProjectStatus).values()}"
+                th:value="${status.name()}"
+                th:text="${status.getDescription()}"
+              ></option>
+            </select>
+            <div
+              th:if="${#fields.hasErrors('projectStatus')}"
+              class="text-red-500 text-xs mt-1"
+            >
+              <span
+                th:each="err : ${#fields.errors('projectStatus')}"
+                th:text="${err}"
+              ></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap-2">
+          <button
+            th:text="#{button.update}"
+            type="submit"
+            class="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600 transition-colors"
+          >
+            Update
+          </button>
+          <button
+            th:text="#{button.cancel}"
+            type="button"
+            th:hx-get="@{/projects/{id}(id=${project.projectId})}"
+            th:hx-target="|#project-item-${project.projectId}|"
+            hx-swap="innerHTML"
+            class="rounded-lg bg-zinc-200 admin-dark:bg-zinc-700 px-4 py-2 text-sm font-medium text-zinc-700 admin-dark:text-zinc-300 hover:bg-zinc-300 admin-dark:hover:bg-zinc-600 hover:text-amber-600 admin-dark:hover:text-amber-400 transition-colors"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</html>

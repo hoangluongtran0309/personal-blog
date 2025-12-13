@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <div th:fragment="item(project)" th:id="|project-item-${project.projectId}|">
+    <div
+      th:with="formattedDate=${#strings.capitalize(#temporals.format(project.publishDate, 'MMMM d, yyyy'))}"
+      class="rounded-3xl bg-white admin-dark:bg-zinc-800 p-6 transition-colors space-y-4 mb-4 border border-zinc-200 hover:border-amber-500 hover:ring-4 hover:ring-amber-500/20 active:border-amber-600 admin-dark:border-zinc-800 admin-dark:hover:border-amber-600/50 admin-dark:active:border-amber-600/75"
+    >
+      <div>
+        <div class="flex justify-between items-start">
+          <div class="flex-1">
+            <h4
+              class="text-lg font-bold admin-dark:text-white"
+              th:text="${project.projectTitle}"
+            >
+              Project title
+            </h4>
+
+            <p class="text-sm text-zinc-500 admin-dark:text-zinc-400 mt-1">
+              <span
+                th:text="${project.projectCategory}"
+                class="rounded-md bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-700 admin-dark:bg-amber-900/50 admin-dark:text-amber-400"
+              >
+                Project category
+              </span>
+
+              <span th:text="${formattedDate}" class="ml-2">MMMM d, yyyy</span>
+
+              <span
+                th:text="#{published}"
+                th:if="${project.projectStatus == T(com.hoangluongtran0309.personal_blog.project.ProjectStatus).PUBLISHED}"
+                class="ml-2 rounded-full bg-green-100 admin-dark:bg-green-900/30 px-2 py-1 text-xs font-medium text-green-800 admin-dark:text-green-300"
+              >
+                Published
+              </span>
+
+              <span
+                th:text="#{draft}"
+                th:unless="${project.projectStatus == T(com.hoangluongtran0309.personal_blog.project.ProjectStatus).PUBLISHED}"
+                class="ml-2 rounded-full bg-amber-100 admin-dark:bg-amber-900/30 px-2 py-1 text-xs font-medium text-amber-800 admin-dark:text-amber-300"
+              >
+                Draft
+              </span>
+            </p>
+
+            <p
+              class="mt-2 text-sm text-zinc-600 admin-dark:text-zinc-300 line-clamp-2"
+              th:text="${project.projectSummary}"
+            >
+              Project summary
+            </p>
+          </div>
+
+          <div class="flex gap-2 ml-4 flex-shrink-0">
+            <button
+              th:text="#{button.edit}"
+              th:hx-get="@{/projects/{id}/edit(id=${project.projectId})}"
+              th:hx-target="|#project-item-${project.projectId}|"
+              hx-swap="innerHTML"
+              class="rounded-lg bg-zinc-100 admin-dark:bg-zinc-700 px-3 py-1 text-sm font-medium text-zinc-700 admin-dark:text-zinc-300 hover:bg-zinc-200 admin-dark:hover:bg-zinc-600 hover:text-amber-600 admin-dark:hover:text-amber-400 transition-colors"
+            >
+              Edit
+            </button>
+
+            <button
+              th:text="#{button.delete}"
+              th:hx-delete="@{/projects/{id}(id=${project.projectId})}"
+              th:hx-target="|#project-item-${project.projectId}|"
+              hx-swap="outerHTML"
+              hx-trigger="click"
+              hx-confirm="Are you sure you want to delete this project?"
+              class="rounded-lg bg-red-100 admin-dark:bg-red-900/30 px-3 py-1 text-sm font-medium text-red-700 admin-dark:text-red-300 hover:bg-red-200 admin-dark:hover:bg-red-800/50 hover:text-red-800 admin-dark:hover:text-red-200 transition-colors"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</html>

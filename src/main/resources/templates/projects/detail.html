@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/main}"
+>
+  <head>
+    <title th:text="${project.projectTitle}"> </title>
+  </head>
+
+  <body>
+    <div layout:fragment="content" class="flex grow flex-col gap-16">
+      <div class="text-center">
+        <div
+          class="mx-auto mb-2 inline-flex rounded-lg bg-zinc-100 px-2.5 py-1 text-sm font-medium text-zinc-500 dark:bg-zinc-800/50 dark:text-zinc-400"
+        >
+          <p class="mb-1 text-sm font-medium text-zinc-600 dark:text-zinc-400">
+            <span
+              th:text="${#strings.capitalize(#temporals.format(project.publishDate, 'MMMM d, yyyy'))}"
+            >
+              MMMM d, yyyy
+            </span>
+          </p>
+        </div>
+
+        <h1
+          class="text-3xl font-black lg:text-5xl"
+          th:text="${project.projectTitle}"
+        >
+          Project title
+        </h1>
+
+        <h2
+          class="mx-auto mt-5 max-w-2xl leading-relaxed text-balance text-zinc-500 dark:text-zinc-400"
+          th:text="${project.projectSummary}"
+        >
+          Project summary
+        </h2>
+      </div>
+
+      <article
+        class="mx-auto w-full max-w-2xl text-zinc-700 dark:text-zinc-300 [&>h2]:mt-14 [&>h2]:text-2xl [&>h2]:font-bold [&>h3]:mt-12 [&>h3]:text-xl [&>h3]:font-bold [&>h4]:mt-10 [&>h4]:text-lg [&>h4]:font-bold [&>p]:mt-5 [&>p]:leading-relaxed [&>pre]:mt-5 [&>pre]:rounded-xl [&>pre]:bg-zinc-800 [&>pre]:p-4 [&>pre]:text-sm [&>pre]:font-medium [&>pre]:text-zinc-100 [&>ul]:mt-5 [&>ul]:flex [&>ul]:list-disc [&>ul]:flex-col [&>ul]:gap-2 [&>ul]:pl-6 [&>ol]:mt-5 [&>ol]:flex [&>ol]:list-decimal [&>ol]:flex-col [&>ol]:gap-2 [&>ol]:pl-6 [&>blockquote]:mt-5 [&>blockquote]:border-l-4 [&>blockquote]:border-amber-500 [&>blockquote]:pl-4 [&>blockquote]:italic [&>blockquote]:text-zinc-600 [&>blockquote]:dark:text-zinc-400 [&>img]:mt-5 [&>img]:rounded-xl [&>img]:w-full [&>img]:object-cover"
+        th:utext="${project.projectContent}"
+      >
+        Project content
+      </article>
+
+      <div
+        class="mx-auto mt-10 w-full max-w-2xl rounded-3xl bg-amber-500/40 p-2 dark:bg-amber-500/10"
+      >
+        <div
+          class="space-y-4 rounded-2xl bg-white p-6 shadow-sm dark:bg-zinc-900"
+        >
+          <div class="flex flex-col gap-6 sm:flex-row sm:items-center">
+            <img
+              th:src="@{/assets/photo.jpg}"
+              src="assets/photo.jpg"
+              alt="Luong"
+              class="mx-auto block aspect-square w-48 flex-none rounded-lg object-cover"
+            />
+
+            <div class="flex flex-col gap-1.5">
+              <div>
+                <span class="text-zinc-700 dark:text-zinc-300"> By </span>
+                <a
+                  href="javascript:void(0)"
+                  class="font-semibold text-black hover:text-zinc-600 dark:text-white dark:hover:text-zinc-400"
+                >
+                  Luong
+                </a>
+                <span class="text-zinc-700 dark:text-zinc-300">
+                  , A sortware developer
+                </span>
+              </div>
+
+              <p
+                class="text-sm/relaxed font-medium text-zinc-500 dark:text-zinc-400/80"
+              >
+                I am a software developer with over two years of experience in
+                building efficient and reliable applications. My work mainly
+                focuses on backend development, performance optimization, and
+                ensuring strong security. I’m always eager to improve my skills
+                and stay updated with the latest trends in technology. Outside
+                of work, I enjoy outdoor activities and exploring new tech.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mx-auto w-full max-w-2xl">
+        <div
+          class="flex justify-between items-center pt-8 border-t border-zinc-200 dark:border-zinc-700"
+        >
+          <a
+            th:text="#{button.back-to-home}"
+            th:href="@{/}"
+            class="text-sm font-medium text-zinc-600 hover:text-zinc-500 dark:text-zinc-400 dark:hover:text-zinc-300"
+          >
+            Back to homepage
+          </a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

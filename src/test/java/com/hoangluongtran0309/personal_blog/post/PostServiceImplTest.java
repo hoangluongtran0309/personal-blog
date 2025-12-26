@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -138,5 +139,23 @@ public class PostServiceImplTest {
         assertThrows(ObjectOptimisticLockingFailureException.class, () -> {
             postServiceImpl.updatePost(postId, parameters);
         });
+    }
+
+
+    @Test
+    void testDeletePost() {
+
+        PostId postId = new PostId(UUID.randomUUID());
+
+        Post post = new Post(postId, new PostTitle("Post title"), new PostSummary("Post summary"),
+                new PostContent("Post content"), PostStatus.DRAFT, LocalDate.of(2025, 1, 1));
+
+        postServiceImpl.deletePost(postId);
+
+        assertThrows(PostNotFoundException.class, () -> {
+            postServiceImpl.getPostById(post.getPostId());
+        });
+
+        verify(postRepository, times(1)).deleteById(postId);
     }
 }

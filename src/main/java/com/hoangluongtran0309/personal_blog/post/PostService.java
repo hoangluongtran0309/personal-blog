@@ -7,4 +7,6 @@ public interface PostService {
     Post getPostById(PostId id);
 
     void updatePost(PostId id, EditPostParameters parameters);
+
+    void deletePost(PostId id);
 }

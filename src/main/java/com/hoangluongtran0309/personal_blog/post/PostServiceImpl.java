@@ -39,4 +39,9 @@ public class PostServiceImpl implements PostService {
         }
         parameters.update(post);
     }
+
+    @Override
+    public void deletePost(PostId id) {
+        postRepository.deleteById(id);
+    }
 }

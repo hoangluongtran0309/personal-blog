@@ -1,10 +1,12 @@
 package com.hoangluongtran0309.personal_blog.post;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,4 +51,27 @@ public class PostServiceImplTest {
         verify(postRepository).save(any(Post.class));
     }
 
+    
+    @Test
+    void testGetPostById() {
+
+        PostId postId = new PostId(UUID.randomUUID());
+
+        Post post = new Post(postId, new PostTitle("Post title"), new PostSummary("Post summary"),
+                new PostContent("Post content"), PostStatus.DRAFT, LocalDate.now());
+
+        when(postRepository.findById(postId)).thenReturn(Optional.ofNullable(post));
+
+        Post result = postServiceImpl.getPostById(postId);
+
+        assertNotNull(result);
+        assertEquals(postId, result.getPostId());
+        assertEquals("Post title", result.getPostTitle().getValue());
+        assertEquals("Post summary", result.getPostSummary().getValue());
+        assertEquals("Post content", result.getPostContent().getValue());
+        assertEquals(PostStatus.DRAFT, result.getPostStatus());
+        assertEquals(post.getPublishDate(), result.getPublishDate());
+
+        verify(postRepository).findById(postId);
+    }
 }

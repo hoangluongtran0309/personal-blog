@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class PostNotFoundException extends RuntimeException {
 
-    public PostNotFoundException(PostId id) {
-        super(String.format("Post with id %d not found", id));
+    public PostNotFoundException(String message) {
+        super(message);
     }
     
 }

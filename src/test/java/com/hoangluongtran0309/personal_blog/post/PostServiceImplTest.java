@@ -88,4 +88,35 @@ public class PostServiceImplTest {
             postServiceImpl.getPostById(postId);
         });
     }
+
+    
+    @Test
+    void testUpdatePost() {
+
+        PostId postId = new PostId(UUID.randomUUID());
+
+        Post post = new Post(postId, new PostTitle("Post title"), new PostSummary("Post summary"),
+                new PostContent("Post content"), PostStatus.DRAFT, LocalDate.of(2025, 1, 1));
+
+        post.setVersion(1L);
+
+        when(postRepository.findById(postId)).thenReturn(Optional.ofNullable(post));
+
+        EditPostParameters parameters = new EditPostParameters(new PostTitle("New Post title"),
+                new PostSummary("New Post summary"), new PostContent("New Post content"), PostStatus.PUBLISHED,
+                LocalDate.now(), post.getVersion());
+
+        postServiceImpl.updatePost(postId, parameters);
+
+        Post result = postServiceImpl.getPostById(postId);
+
+        assertNotNull(result);
+        assertEquals(postId, result.getPostId());
+        assertEquals("New Post title", result.getPostTitle().getValue());
+        assertEquals("New Post summary", result.getPostSummary().getValue());
+        assertEquals("New Post content", result.getPostContent().getValue());
+        assertEquals(PostStatus.PUBLISHED, result.getPostStatus());
+        assertEquals(post.getPublishDate(), result.getPublishDate());
+        assertEquals(1L, result.getVersion());
+    }
 }

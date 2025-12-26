@@ -5,4 +5,6 @@ public interface PostService {
     Post createPost(CreatePostParameters parameters);
 
     Post getPostById(PostId id);
+
+    void updatePost(PostId id, EditPostParameters parameters);
 }

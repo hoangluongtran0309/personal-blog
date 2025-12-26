@@ -27,4 +27,10 @@ public class PostServiceImpl implements PostService {
         return postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFoundException("Post not found with" + id.toString()));
     }
+
+    @Override
+    public void updatePost(PostId id, EditPostParameters parameters) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("Post not found with" + id.toString()));
+        parameters.update(post);
+    }
 }

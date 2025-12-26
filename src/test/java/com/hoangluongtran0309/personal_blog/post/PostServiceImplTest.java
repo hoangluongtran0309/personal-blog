@@ -1,21 +1,22 @@
 package com.hoangluongtran0309.personal_blog.post;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 @ExtendWith(MockitoExtension.class)
 public class PostServiceImplTest {
@@ -31,7 +32,8 @@ public class PostServiceImplTest {
 
         PostId postId = new PostId(UUID.randomUUID());
 
-        CreatePostParameters parameters = new CreatePostParameters(new PostTitle("Post title"), new PostSummary("Post summary"),
+        CreatePostParameters parameters = new CreatePostParameters(new PostTitle("Post title"),
+                new PostSummary("Post summary"),
                 new PostContent("Post content"), PostStatus.DRAFT, LocalDate.now());
 
         when(postRepository.nextPostId()).thenReturn(postId);
@@ -52,7 +54,6 @@ public class PostServiceImplTest {
         verify(postRepository).save(any(Post.class));
     }
 
-    
     @Test
     void testGetPostById() {
 
@@ -76,7 +77,6 @@ public class PostServiceImplTest {
         verify(postRepository).findById(postId);
     }
 
-
     @Test
     void testGetPostById_shouldThrowException_WhenNotExists() {
 
@@ -89,7 +89,6 @@ public class PostServiceImplTest {
         });
     }
 
-    
     @Test
     void testUpdatePost() {
 
@@ -118,5 +117,26 @@ public class PostServiceImplTest {
         assertEquals(PostStatus.PUBLISHED, result.getPostStatus());
         assertEquals(post.getPublishDate(), result.getPublishDate());
         assertEquals(1L, result.getVersion());
+    }
+
+    @Test
+    void testUpdatePost_shouldThrowOptimisticLockingFailureException_whenVersionMismatch() {
+
+        PostId postId = new PostId(UUID.randomUUID());
+
+        Post post = new Post(postId, new PostTitle("Post title"), new PostSummary("Post summary"),
+                new PostContent("Post content"), PostStatus.DRAFT, LocalDate.of(2025, 1, 1));
+
+        post.setVersion(1L);
+
+        when(postRepository.findById(postId)).thenReturn(Optional.ofNullable(post));
+
+        EditPostParameters parameters = new EditPostParameters(new PostTitle("New Post title"),
+                new PostSummary("New Post summary"), new PostContent("New Post content"), PostStatus.PUBLISHED,
+                LocalDate.now(), 2L);
+
+        assertThrows(ObjectOptimisticLockingFailureException.class, () -> {
+            postServiceImpl.updatePost(postId, parameters);
+        });
     }
 }

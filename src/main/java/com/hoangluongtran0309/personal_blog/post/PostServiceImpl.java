@@ -1,5 +1,8 @@
 package com.hoangluongtran0309.personal_blog.post;
 
+import java.util.Objects;
+
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -31,6 +34,9 @@ public class PostServiceImpl implements PostService {
     @Override
     public void updatePost(PostId id, EditPostParameters parameters) {
         Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("Post not found with" + id.toString()));
+        if (!Objects.equals(post.getVersion(), parameters.getVersion())) {
+            throw new ObjectOptimisticLockingFailureException(Post.class, id.asString());
+        }
         parameters.update(post);
     }
 }

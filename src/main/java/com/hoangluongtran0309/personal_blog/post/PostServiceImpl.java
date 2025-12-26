@@ -22,4 +22,8 @@ public class PostServiceImpl implements PostService {
         return postRepository.save(post);
     }
 
+    @Override
+    public Post getPostById(PostId id) {
+        return postRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
+    }
 }

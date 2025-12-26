@@ -4,4 +4,5 @@ public interface PostService {
 
     Post createPost(CreatePostParameters parameters);
 
+    Post getPostById(PostId id);
 }

@@ -59,4 +59,8 @@ public class Category {
         return updatedAt;
     }
 
+    public static Category create(CategoryId categoryId, CategoryName categoryName, CategorySlug categorySlug) {
+        return new Category(categoryId, categoryName, categorySlug);
+    }
+
 }

@@ -1,5 +1,7 @@
 package com.hoangluongtran0309.personal_blog.category;
 
+import org.springframework.util.Assert;
+
 public class CategoryName {
 
     private String name;
@@ -9,6 +11,7 @@ public class CategoryName {
     }
 
     public CategoryName(String name) {
+        Assert.hasText(name, "Category name must not be blank");
         this.name = name;
     }
 

@@ -2,6 +2,8 @@ package com.hoangluongtran0309.personal_blog.category;
 
 import java.util.UUID;
 
+import org.springframework.util.Assert;
+
 public class CategoryId {
 
     private UUID id;
@@ -11,6 +13,7 @@ public class CategoryId {
     }
 
     public CategoryId(UUID id) {
+        Assert.notNull(id, "Category ID must not be null");
         this.id = id;
     }
 

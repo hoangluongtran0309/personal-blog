@@ -63,4 +63,9 @@ public class Category {
         return new Category(categoryId, categoryName, categorySlug);
     }
 
+    public void addChild(Category childCategory) {
+        childCategory.parentCategory = this;
+        this.childrenCategories.add(childCategory);
+    }
+
 }

@@ -4,6 +4,8 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+
 import org.junit.jupiter.api.Test;
 
 public class CategoryTest {
@@ -15,6 +17,23 @@ public class CategoryTest {
         assertNotNull(category);
         assertEquals("New Category", category.getCategoryName().getName());
         assertEquals("new-category", category.getCategorySlug().getSlug());
+    }
+
+    @Test
+    void createCategory_ShouldFailure_WhenValueObjectsIsInvalid() {
+        assertThrowsExactly(IllegalArgumentException.class, () -> {
+            Category.create(new CategoryId(null), new CategoryName("New Category"), new CategorySlug("new-category"));
+        }, "Category ID must not be null");
+        assertThrowsExactly(IllegalArgumentException.class, () -> {
+            Category.create(new CategoryId(UUID.randomUUID()), new CategoryName(""), new CategorySlug("new-category"));
+        }, "Category name must not be blank");
+        assertThrowsExactly(IllegalArgumentException.class, () -> {
+            Category.create(new CategoryId(UUID.randomUUID()), new CategoryName("New Category"), new CategorySlug(""));
+        }, "Category slug must not be blank");
+        assertThrowsExactly(IllegalArgumentException.class, () -> {
+            Category.create(new CategoryId(UUID.randomUUID()), new CategoryName("New Category"),
+                    new CategorySlug("new slug"));
+        }, "new slug is invalid slug");
     }
 
 }

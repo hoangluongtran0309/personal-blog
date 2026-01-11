@@ -109,4 +109,15 @@ public class PostTest {
         }, "Post is already published");
     }
 
+    @Test
+    void publishPost_ShouldFailure_WhenCategoryAndTagAreNotAssigned() {
+        Post post = new Post(new PostId(UUID.randomUUID()), new PostTitle("New Post Title"), new PostBody("New Post Summary", "New Post Content"), new PostSlug("new-post-slug"), LocalDateTime.now(), PostStatus.PUBLISHED);
+        assertThrowsExactly(IllegalStateException.class, () -> {
+            post.publish(LocalDateTime.now());
+        }, "Post must have at least one category");
+        assertThrowsExactly(IllegalStateException.class, () -> {
+            post.publish(LocalDateTime.now());
+        }, "Post must have at least one tag");
+    }
+
 }

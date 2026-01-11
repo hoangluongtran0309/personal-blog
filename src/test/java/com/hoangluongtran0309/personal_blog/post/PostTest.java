@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import com.hoangluongtran0309.personal_blog.category.CategoryId;
+import com.hoangluongtran0309.personal_blog.tag.TagId;
 
 public class PostTest {
 
@@ -69,6 +70,13 @@ public class PostTest {
         assertFalse(post.getPostCategories().isEmpty());
         post.removeCategory(new PostCategory(categoryId));
         assertTrue(post.getPostCategories().isEmpty());
+    }
+
+    @Test
+    void addTagToPost_ShouldSuccess() {
+        Post post = Post.create(new PostId(UUID.randomUUID()), new PostTitle("New Post Title"));
+        post.addTag(new PostTag(new TagId(UUID.randomUUID())));
+        assertFalse(post.getPostTags().isEmpty());
     }
 
 }

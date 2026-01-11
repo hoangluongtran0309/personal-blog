@@ -64,6 +64,12 @@ public class Category {
     }
 
     public void addChild(Category childCategory) {
+        if (childCategory == null) {
+            throw new IllegalArgumentException("Child category must not be null");
+        }
+        if (this == childCategory) {
+            throw new IllegalArgumentException("Category cannot be child of itself");
+        }
         childCategory.parentCategory = this;
         this.childrenCategories.add(childCategory);
     }

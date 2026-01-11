@@ -88,9 +88,16 @@ public class Post {
     }
 
     public void update(PostTitle postTitle, PostBody postBody, PostSlug postSlug) {
+        assertUpdatable();
         this.postTitle = postTitle;
         this.postBody = postBody;
         this.postSlug = postSlug;
+    }
+
+    public void assertUpdatable() {
+        if (postStatus != PostStatus.DRAFT) {
+            throw new IllegalStateException("Only draft posts can be updated");
+        }
     }
 
 }

@@ -99,4 +99,9 @@ public class Project {
         }
     }
 
+    public void addTag(ProjectTag projectTag) {
+        assertUpdatable();
+        this.projectTags.add(projectTag);
+    }
+
 }

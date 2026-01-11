@@ -85,4 +85,9 @@ public class Category {
         childCategory.parentCategory = null;
     }
 
+    public void update(CategoryName categoryName, CategorySlug categorySlug) {
+        this.categoryName = categoryName;
+        this.categorySlug = categorySlug;
+    }
+
 }

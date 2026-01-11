@@ -95,4 +95,14 @@ public class CategoryTest {
         }, "The given category is not a child of this category");
     }
 
+    @Test
+    void updateCategory_ShouldSuccess() {
+        Category category = Category.create(new CategoryId(UUID.randomUUID()), new CategoryName("New Category"),
+                new CategorySlug("new-category"));
+        category.update(new CategoryName("New Updated Category"), new CategorySlug("new-updated-category"));
+        assertNotNull(category);
+        assertEquals("New Updated Category", category.getCategoryName().getName());
+        assertEquals("new-updated-category", category.getCategorySlug().getSlug());
+    }
+
 }

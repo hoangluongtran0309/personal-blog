@@ -124,6 +124,12 @@ public class Post {
         if (postStatus == PostStatus.PUBLISHED) {
             throw new IllegalStateException("Post is already published");
         }
+        if (postCategories.isEmpty()) {
+            throw new IllegalStateException("Post must have at least one category");
+        }
+        if (postTags.isEmpty()) {
+            throw new IllegalStateException("Post must have at least one tag");
+        }
         this.postStatus = PostStatus.PUBLISHED;
         this.publishDate = publishDate;
     }

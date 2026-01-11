@@ -44,4 +44,8 @@ public class Tag {
         return updatedAt;
     }
 
+    public static Tag create(TagId tagId, TagName tagName, TagSlug tagSlug) {
+        return new Tag(tagId, tagName, tagSlug);
+    }
+
 }

@@ -120,4 +120,9 @@ public class Post {
         this.postTags.remove(postTag);
     }
 
+    public void publish(LocalDateTime publishDate) {
+        this.postStatus = PostStatus.PUBLISHED;
+        this.publishDate = publishDate;
+    }
+
 }

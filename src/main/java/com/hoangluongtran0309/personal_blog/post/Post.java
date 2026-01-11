@@ -87,4 +87,10 @@ public class Post {
         return new Post(postId, postTitle, null, null, null, PostStatus.DRAFT);
     }
 
+    public void update(PostTitle postTitle, PostBody postBody, PostSlug postSlug) {
+        this.postTitle = postTitle;
+        this.postBody = postBody;
+        this.postSlug = postSlug;
+    }
+
 }

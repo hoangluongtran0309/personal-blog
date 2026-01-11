@@ -105,4 +105,9 @@ public class Post {
         this.postCategories.add(postCategory);
     }
 
+    public void removeCategory(PostCategory postCategory) {
+        assertUpdatable();
+        this.postCategories.remove(postCategory);
+    }
+
 }

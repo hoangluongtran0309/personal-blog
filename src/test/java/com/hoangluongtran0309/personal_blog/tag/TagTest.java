@@ -34,4 +34,13 @@ public class TagTest {
         }, "new slug is invalid slug");
     }
 
+    @Test
+    void updateTag_ShouldSuccess() {
+        Tag tag = Tag.create(new TagId(UUID.randomUUID()), new TagName("New Tag"), new TagSlug("new-tag"));
+        tag.update(new TagName("New Updated Tag"), new TagSlug("new-updated-tag"));
+        assertNotNull(tag);
+        assertEquals("New Updated Tag", tag.getTagName().getName());
+        assertEquals("new-updated-tag", tag.getTagSlug().getSlug());
+    }
+
 }

@@ -110,4 +110,9 @@ public class Post {
         this.postCategories.remove(postCategory);
     }
 
+    public void addTag(PostTag postTag) {
+        assertUpdatable();
+        this.postTags.add(postTag);
+    }
+
 }

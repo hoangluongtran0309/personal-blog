@@ -104,4 +104,9 @@ public class Project {
         this.projectTags.add(projectTag);
     }
 
+    public void removeTag(ProjectTag projectTag) {
+        assertUpdatable();
+        this.projectTags.remove(projectTag);
+    }
+
 }

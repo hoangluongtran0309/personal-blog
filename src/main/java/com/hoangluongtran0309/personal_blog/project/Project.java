@@ -86,4 +86,10 @@ public class Project {
         return new Project(projectId, projectTitle, null, null, LocalDateTime.now(), null, ProjectStatus.DRAFT);
     }
 
+    public void update(ProjectTitle projectTitle, ProjectBody projectBody, ProjectSlug projectSlug) {
+        this.projectTitle = projectTitle;
+        this.projectBody = projectBody;
+        this.projectSlug = projectSlug;
+    }
+
 }

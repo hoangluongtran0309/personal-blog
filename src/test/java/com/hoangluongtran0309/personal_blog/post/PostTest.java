@@ -79,4 +79,14 @@ public class PostTest {
         assertFalse(post.getPostTags().isEmpty());
     }
 
+    @Test
+    void removeTagFromPost_ShouldSuccess() {
+        Post post = Post.create(new PostId(UUID.randomUUID()), new PostTitle("New Post Title"));
+        TagId tagId = new TagId(UUID.randomUUID());
+        post.addTag(new PostTag(tagId));
+        assertFalse(post.getPostTags().isEmpty());
+        post.removeTag(new PostTag(tagId));
+        assertTrue(post.getPostTags().isEmpty());
+    }
+
 }

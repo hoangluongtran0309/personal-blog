@@ -74,4 +74,8 @@ public class Category {
         this.childrenCategories.add(childCategory);
     }
 
+    public void removeChild(Category childCategory) {
+        this.childrenCategories.remove(childCategory);
+    }
+
 }

@@ -109,4 +109,9 @@ public class Project {
         this.projectTags.remove(projectTag);
     }
 
+    public void complete(LocalDateTime endTime) {
+        this.endTime = endTime;
+        this.projectStatus = ProjectStatus.COMPLETED;
+    }
+
 }

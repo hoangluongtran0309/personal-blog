@@ -2,6 +2,8 @@ package com.hoangluongtran0309.personal_blog.post;
 
 import java.util.UUID;
 
+import org.springframework.util.Assert;
+
 public class PostId {
 
     private UUID id;
@@ -11,6 +13,7 @@ public class PostId {
     }
 
     public PostId(UUID id) {
+        Assert.notNull(id, "Post ID must not be null");
         this.id = id;
     }
 

@@ -1,5 +1,7 @@
 package com.hoangluongtran0309.personal_blog.post;
 
+import org.springframework.util.Assert;
+
 public class PostTitle {
 
     private String title;
@@ -9,6 +11,7 @@ public class PostTitle {
     }
 
     public PostTitle(String title) {
+        Assert.hasText(title, "Post title must not be blank");
         this.title = title;
     }
 

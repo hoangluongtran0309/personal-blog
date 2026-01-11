@@ -1,5 +1,7 @@
 package com.hoangluongtran0309.personal_blog.post;
 
+import org.springframework.util.Assert;
+
 import com.hoangluongtran0309.personal_blog.category.CategoryId;
 
 public class PostCategory {
@@ -11,6 +13,7 @@ public class PostCategory {
     }
 
     public PostCategory(CategoryId categoryId) {
+        Assert.notNull(categoryId, "Category ID must not be null");
         this.categoryId = categoryId;
     }
 

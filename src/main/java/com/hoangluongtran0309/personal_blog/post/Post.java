@@ -121,6 +121,9 @@ public class Post {
     }
 
     public void publish(LocalDateTime publishDate) {
+        if (postStatus == PostStatus.PUBLISHED) {
+            throw new IllegalStateException("Post is already published");
+        }
         this.postStatus = PostStatus.PUBLISHED;
         this.publishDate = publishDate;
     }

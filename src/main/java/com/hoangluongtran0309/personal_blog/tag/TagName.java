@@ -1,5 +1,7 @@
 package com.hoangluongtran0309.personal_blog.tag;
 
+import org.springframework.util.Assert;
+
 public class TagName {
 
     private String name;
@@ -9,6 +11,7 @@ public class TagName {
     }
 
     public TagName(String name) {
+        Assert.hasText(name, "Tag name must not be blank");
         this.name = name;
     }
 

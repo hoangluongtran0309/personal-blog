@@ -2,6 +2,8 @@ package com.hoangluongtran0309.personal_blog.tag;
 
 import java.util.UUID;
 
+import org.springframework.util.Assert;
+
 public class TagId {
 
     private UUID id;
@@ -11,6 +13,7 @@ public class TagId {
     }
 
     public TagId(UUID id) {
+        Assert.notNull(id, "Tag ID must not be null");
         this.id = id;
     }
 

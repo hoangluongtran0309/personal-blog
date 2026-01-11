@@ -75,7 +75,14 @@ public class Category {
     }
 
     public void removeChild(Category childCategory) {
+        if (childCategory == null) {
+            throw new IllegalArgumentException("Child category must not be null");
+        }
+        if (childCategory.parentCategory != this) {
+            throw new IllegalArgumentException("The given category is not a child of this category");
+        }
         this.childrenCategories.remove(childCategory);
+        childCategory.parentCategory = null;
     }
 
 }

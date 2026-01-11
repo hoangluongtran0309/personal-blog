@@ -113,6 +113,9 @@ public class Project {
         if (projectStatus == ProjectStatus.COMPLETED) {
             throw new IllegalStateException("Project is already completed");
         }
+        if (projectTags.isEmpty()) {
+            throw new IllegalStateException("Project must have at least one tag");
+        }
         this.endTime = endTime;
         this.projectStatus = ProjectStatus.COMPLETED;
     }

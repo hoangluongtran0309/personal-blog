@@ -83,4 +83,8 @@ public class Post {
         return updatedAt;
     }
 
+    public static Post create(PostId postId, PostTitle postTitle) {
+        return new Post(postId, postTitle, null, null, null, PostStatus.DRAFT);
+    }
+
 }

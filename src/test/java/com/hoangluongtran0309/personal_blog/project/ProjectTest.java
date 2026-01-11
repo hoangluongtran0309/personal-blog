@@ -1,5 +1,6 @@
 package com.hoangluongtran0309.personal_blog.project;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,6 +39,14 @@ public class ProjectTest {
         assertEquals("New Updated Project Summary", project.getProjectBody().getSummary());
         assertEquals("New Updated Project Content", project.getProjectBody().getContent());
         assertEquals("new-updated-project-slug", project.getProjectSlug().getSlug());
+    }
+
+    @Test
+    void updateProject_ShouldFailure_WhenProjectIsNotDraftStatus() {
+        Project project = new Project(new ProjectId(UUID.randomUUID()), new ProjectTitle("New Project Title"), new ProjectBody("New Project Summary", "New Project Content"), new ProjectSlug("new-project-slug"), LocalDateTime.now(), LocalDateTime.MAX, ProjectStatus.COMPLETED);
+        assertThrowsExactly(IllegalStateException.class, () -> {
+            project.update(new ProjectTitle("New Updated Project Summary"), new ProjectBody("New Updated Project Summary", "New Updated Project Content"), new ProjectSlug("new-updated-project-slug"));
+        }, "Only draft projects can be updated");
     }
 
 }

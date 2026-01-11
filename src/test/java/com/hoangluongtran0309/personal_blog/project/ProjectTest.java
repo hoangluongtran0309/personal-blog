@@ -70,4 +70,14 @@ public class ProjectTest {
         assertTrue(project.getProjectTags().isEmpty());
     }
 
+    @Test
+    void completeProject_ShouldSuccess_WhenProjectIsDraftStatus() {
+        Project project = Project.create(new ProjectId(UUID.randomUUID()), new ProjectTitle("New Project Title"));
+        TagId tagId = new TagId(UUID.randomUUID());
+        project.update(new ProjectTitle("New Project Title"), new ProjectBody("New Project Summary", "New Project Content"), new ProjectSlug("new-project-slug"));
+        project.addTag(new ProjectTag(tagId));
+        project.complete(LocalDateTime.now());
+        assertEquals(ProjectStatus.COMPLETED, project.getProjectStatus());
+    }
+
 }

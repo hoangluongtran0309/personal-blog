@@ -89,4 +89,16 @@ public class PostTest {
         assertTrue(post.getPostTags().isEmpty());
     }
 
+    @Test
+    void publishPost_ShouldSuccess_WhenPostIsDraftStatus() {
+        Post post = Post.create(new PostId(UUID.randomUUID()), new PostTitle("New Post Title"));
+        CategoryId categoryId = new CategoryId(UUID.randomUUID());
+        TagId tagId = new TagId(UUID.randomUUID());
+        post.update(new PostTitle("New Post Title"), new PostBody("New Post Summary", "New Post Content"), new PostSlug("new-post-slug"));
+        post.addCategory(new PostCategory(categoryId));
+        post.addTag(new PostTag(tagId));
+        post.publish(LocalDateTime.now());
+        assertEquals(PostStatus.PUBLISHED, post.getPostStatus());
+    }
+
 }

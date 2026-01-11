@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import org.junit.jupiter.api.Test;
 
@@ -26,6 +27,18 @@ public class PostTest {
             Post.create(new PostId(UUID.randomUUID()), new PostTitle(""));
 
         }, "Post title must not be blank");
+    }
+
+    @Test
+    void updatePost_ShouldSuccess_WhenPostIsDraftStatus() {
+        Post post = Post.create(new PostId(UUID.randomUUID()), new PostTitle("New Post Title"));
+        assertNull(post.getPostBody());
+        assertNull(post.getPostSlug());
+        post.update(new PostTitle("New Updated Post Title"), new PostBody("New Updated Post Summary", "New Updated Post Content"), new PostSlug("new-updated-post-slug"));
+        assertEquals("New Updated Post Title", post.getPostTitle().getTitle());
+        assertEquals("New Updated Post Summary", post.getPostBody().getSummary());
+        assertEquals("New Updated Post Content", post.getPostBody().getContent());
+        assertEquals("new-updated-post-slug", post.getPostSlug().getSlug());
     }
 
 }

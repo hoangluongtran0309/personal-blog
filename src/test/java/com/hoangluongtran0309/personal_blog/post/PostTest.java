@@ -4,10 +4,13 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import org.junit.jupiter.api.Test;
+
+import com.hoangluongtran0309.personal_blog.category.CategoryId;
 
 public class PostTest {
 
@@ -48,6 +51,13 @@ public class PostTest {
         assertThrowsExactly(IllegalStateException.class, () -> {
             post.update(new PostTitle("New Updated Post Summary"), new PostBody("New Updated Post Summary", "New Updated Post Content"), new PostSlug("new-updated-post-slug"));
         }, "Only draft posts can be updated");
+    }
+
+    @Test
+    void addCategoryToPost_ShouldSuccess() {
+        Post post = Post.create(new PostId(UUID.randomUUID()), new PostTitle("New Post Title"));
+        post.addCategory(new PostCategory(new CategoryId(UUID.randomUUID())));
+        assertFalse(post.getPostCategories().isEmpty());
     }
 
 }

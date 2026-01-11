@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 public class CategoryTest {
@@ -60,6 +61,20 @@ public class CategoryTest {
         assertThrowsExactly(IllegalArgumentException.class, () -> {
             parentCategory.addChild(parentCategory);
         }, "Category cannot be child of itself");
+    }
+
+    @Test
+    void removeChildCategory_ShouldSuccess() {
+        Category parentCategory = Category.create(new CategoryId(UUID.randomUUID()),
+                new CategoryName("New Parent Category"),
+                new CategorySlug("new-parent-category"));
+        Category childCategory = Category.create(new CategoryId(UUID.randomUUID()),
+                new CategoryName("New Child Category"),
+                new CategorySlug("new-child-category"));
+        parentCategory.addChild(childCategory);
+        assertFalse(parentCategory.getChildrenCategories().isEmpty());
+        parentCategory.removeChild(childCategory);
+        assertTrue(parentCategory.getChildrenCategories().isEmpty());
     }
 
 }

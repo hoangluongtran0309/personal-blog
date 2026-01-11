@@ -1,5 +1,6 @@
 package com.hoangluongtran0309.personal_blog.post;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,6 +40,14 @@ public class PostTest {
         assertEquals("New Updated Post Summary", post.getPostBody().getSummary());
         assertEquals("New Updated Post Content", post.getPostBody().getContent());
         assertEquals("new-updated-post-slug", post.getPostSlug().getSlug());
+    }
+
+    @Test
+    void updatePost_ShouldFailure_WhenPostIsNotDraftStatus() {
+        Post post = new Post(new PostId(UUID.randomUUID()), new PostTitle("New Post Title"), new PostBody("New Post Summary", "New Post Content"), new PostSlug("new-post-slug"), LocalDateTime.now(), PostStatus.PUBLISHED);
+        assertThrowsExactly(IllegalStateException.class, () -> {
+            post.update(new PostTitle("New Updated Post Summary"), new PostBody("New Updated Post Summary", "New Updated Post Content"), new PostSlug("new-updated-post-slug"));
+        }, "Only draft posts can be updated");
     }
 
 }

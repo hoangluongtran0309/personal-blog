@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import com.hoangluongtran0309.personal_blog.tag.TagId;
@@ -57,6 +58,16 @@ public class ProjectTest {
         Project project = Project.create(new ProjectId(UUID.randomUUID()), new ProjectTitle("New Project Title"));
         project.addTag(new ProjectTag(new TagId(UUID.randomUUID())));
         assertFalse(project.getProjectTags().isEmpty());
+    }
+
+    @Test
+    void removeTagFromProject_ShouldSuccess() {
+        Project project = Project.create(new ProjectId(UUID.randomUUID()), new ProjectTitle("New Project Title"));
+        TagId tagId = new TagId(UUID.randomUUID());
+        project.addTag(new ProjectTag(tagId));
+        assertFalse(project.getProjectTags().isEmpty());
+        project.removeTag(new ProjectTag(tagId));
+        assertTrue(project.getProjectTags().isEmpty());
     }
 
 }

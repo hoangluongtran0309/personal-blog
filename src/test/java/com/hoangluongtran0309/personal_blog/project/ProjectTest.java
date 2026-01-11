@@ -4,10 +4,13 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import org.junit.jupiter.api.Test;
+
+import com.hoangluongtran0309.personal_blog.tag.TagId;
 
 public class ProjectTest {
 
@@ -47,6 +50,13 @@ public class ProjectTest {
         assertThrowsExactly(IllegalStateException.class, () -> {
             project.update(new ProjectTitle("New Updated Project Summary"), new ProjectBody("New Updated Project Summary", "New Updated Project Content"), new ProjectSlug("new-updated-project-slug"));
         }, "Only draft projects can be updated");
+    }
+
+    @Test
+    void addTagToProject_ShouldSuccess() {
+        Project project = Project.create(new ProjectId(UUID.randomUUID()), new ProjectTitle("New Project Title"));
+        project.addTag(new ProjectTag(new TagId(UUID.randomUUID())));
+        assertFalse(project.getProjectTags().isEmpty());
     }
 
 }

@@ -101,4 +101,12 @@ public class PostTest {
         assertEquals(PostStatus.PUBLISHED, post.getPostStatus());
     }
 
+    @Test
+    void publishPost_ShouldFailure_WhenPostIsAlreadyPublished() {
+        Post post = new Post(new PostId(UUID.randomUUID()), new PostTitle("New Post Title"), new PostBody("New Post Summary", "New Post Content"), new PostSlug("new-post-slug"), LocalDateTime.now(), PostStatus.PUBLISHED);
+        assertThrowsExactly(IllegalStateException.class, () -> {
+            post.publish(LocalDateTime.now());
+        }, "Post is already published");
+    }
+
 }

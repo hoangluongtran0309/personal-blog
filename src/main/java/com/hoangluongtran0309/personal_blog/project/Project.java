@@ -82,4 +82,8 @@ public class Project {
         return updatedAt;
     }
 
+    public static Project create(ProjectId projectId, ProjectTitle projectTitle) {
+        return new Project(projectId, projectTitle, null, null, LocalDateTime.now(), null, ProjectStatus.DRAFT);
+    }
+
 }

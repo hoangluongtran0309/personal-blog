@@ -110,6 +110,9 @@ public class Project {
     }
 
     public void complete(LocalDateTime endTime) {
+        if (projectStatus == ProjectStatus.COMPLETED) {
+            throw new IllegalStateException("Project is already completed");
+        }
         this.endTime = endTime;
         this.projectStatus = ProjectStatus.COMPLETED;
     }

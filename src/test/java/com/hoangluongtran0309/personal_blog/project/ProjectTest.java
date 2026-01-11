@@ -80,4 +80,12 @@ public class ProjectTest {
         assertEquals(ProjectStatus.COMPLETED, project.getProjectStatus());
     }
 
+    @Test
+    void completeProject_ShouldFailure_WhenProjectIsAlreadyCompleted() {
+        Project project = new Project(new ProjectId(UUID.randomUUID()), new ProjectTitle("New Project Title"), new ProjectBody("New Project Summary", "New Project Content"), new ProjectSlug("new-project-slug"), LocalDateTime.now(), LocalDateTime.MAX, ProjectStatus.COMPLETED);
+        assertThrowsExactly(IllegalStateException.class, () -> {
+            project.complete(LocalDateTime.now());
+        }, "Project is already completed");
+    }
+
 }

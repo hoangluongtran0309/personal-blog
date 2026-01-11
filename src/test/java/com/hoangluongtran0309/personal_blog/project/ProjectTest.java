@@ -88,4 +88,12 @@ public class ProjectTest {
         }, "Project is already completed");
     }
 
+    @Test
+    void completeProject_ShouldFailure_WhenTagIsNotAssigned() {
+        Project project = new Project(new ProjectId(UUID.randomUUID()), new ProjectTitle("New Project Title"), new ProjectBody("New Project Summary", "New Project Content"), new ProjectSlug("new-project-slug"), LocalDateTime.now(), LocalDateTime.MAX, ProjectStatus.COMPLETED);
+        assertThrowsExactly(IllegalStateException.class, () -> {
+            project.complete(LocalDateTime.now());
+        }, "Project must have at least one tag");
+    }
+
 }

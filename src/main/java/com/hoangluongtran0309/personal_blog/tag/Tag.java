@@ -48,4 +48,9 @@ public class Tag {
         return new Tag(tagId, tagName, tagSlug);
     }
 
+    public void update(TagName tagName, TagSlug tagSlug) {
+        this.tagName = tagName;
+        this.tagSlug = tagSlug;
+    }
+
 }

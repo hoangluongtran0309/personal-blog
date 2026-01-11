@@ -87,9 +87,16 @@ public class Project {
     }
 
     public void update(ProjectTitle projectTitle, ProjectBody projectBody, ProjectSlug projectSlug) {
+        assertUpdatable();
         this.projectTitle = projectTitle;
         this.projectBody = projectBody;
         this.projectSlug = projectSlug;
+    }
+
+    public void assertUpdatable() {
+        if (projectStatus != ProjectStatus.DRAFT) {
+            throw new IllegalStateException("Only draft projects can be updated");
+        }
     }
 
 }

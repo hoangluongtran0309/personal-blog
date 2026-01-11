@@ -100,4 +100,9 @@ public class Post {
         }
     }
 
+    public void addCategory(PostCategory postCategory) {
+        assertUpdatable();
+        this.postCategories.add(postCategory);
+    }
+
 }

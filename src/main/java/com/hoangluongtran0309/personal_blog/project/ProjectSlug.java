@@ -1,5 +1,9 @@
 package com.hoangluongtran0309.personal_blog.project;
 
+import org.springframework.util.Assert;
+
+import com.hoangluongtran0309.personal_blog.common.Constant;
+
 public class ProjectSlug {
 
     private String slug;
@@ -9,6 +13,8 @@ public class ProjectSlug {
     }
 
     public ProjectSlug(String slug) {
+        Assert.isTrue(slug.matches(Constant.SLUG_PATTERN),  slug + " is invalid slug");
+        Assert.hasText(slug, "Project slug must not be blank");
         this.slug = slug;
     }
 

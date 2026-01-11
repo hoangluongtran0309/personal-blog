@@ -1,5 +1,7 @@
 package com.hoangluongtran0309.personal_blog.project;
 
+import org.springframework.util.Assert;
+
 public class ProjectBody {
 
     private String summary;
@@ -11,7 +13,9 @@ public class ProjectBody {
     }
 
     public ProjectBody(String summary, String content) {
+        Assert.hasText(summary, "Project summary must not be blank");
         this.summary = summary;
+        Assert.hasText(content, "Project content must not be blank");
         this.content = content;
     }
 

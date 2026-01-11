@@ -2,6 +2,8 @@ package com.hoangluongtran0309.personal_blog.project;
 
 import java.util.UUID;
 
+import org.springframework.util.Assert;
+
 public class ProjectId {
 
     private UUID id;
@@ -11,6 +13,7 @@ public class ProjectId {
     }
 
     public ProjectId(UUID id) {
+        Assert.notNull(id, "Project ID must not be null");
         this.id = id;
     }
 

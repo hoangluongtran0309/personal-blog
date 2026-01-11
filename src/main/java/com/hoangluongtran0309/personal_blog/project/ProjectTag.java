@@ -1,5 +1,7 @@
 package com.hoangluongtran0309.personal_blog.project;
 
+import org.springframework.util.Assert;
+
 import com.hoangluongtran0309.personal_blog.tag.TagId;
 
 public class ProjectTag {
@@ -11,6 +13,7 @@ public class ProjectTag {
     }
 
     public ProjectTag(TagId tagId) {
+        Assert.notNull(tagId, "Tag ID must not be null");
         this.tagId = tagId;
     }
 

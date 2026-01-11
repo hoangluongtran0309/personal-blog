@@ -1,5 +1,7 @@
 package com.hoangluongtran0309.personal_blog.project;
 
+import org.springframework.util.Assert;
+
 public class ProjectTitle {
 
     private String title;
@@ -9,6 +11,7 @@ public class ProjectTitle {
     }
 
     public ProjectTitle(String title) {
+        Assert.hasText(title, "Project title must not be blank");
         this.title = title;
     }
 

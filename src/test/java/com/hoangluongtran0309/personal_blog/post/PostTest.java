@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import com.hoangluongtran0309.personal_blog.category.CategoryId;
@@ -58,6 +59,16 @@ public class PostTest {
         Post post = Post.create(new PostId(UUID.randomUUID()), new PostTitle("New Post Title"));
         post.addCategory(new PostCategory(new CategoryId(UUID.randomUUID())));
         assertFalse(post.getPostCategories().isEmpty());
+    }
+
+    @Test
+    void removeCategoryFromPost_ShouldSuccess() {
+        Post post = Post.create(new PostId(UUID.randomUUID()), new PostTitle("New Post Title"));
+        CategoryId categoryId = new CategoryId(UUID.randomUUID());
+        post.addCategory(new PostCategory(categoryId));
+        assertFalse(post.getPostCategories().isEmpty());
+        post.removeCategory(new PostCategory(categoryId));
+        assertTrue(post.getPostCategories().isEmpty());
     }
 
 }

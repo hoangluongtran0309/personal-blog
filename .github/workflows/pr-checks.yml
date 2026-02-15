@@ -1,0 +1,212 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+env:
+  JAVA_VERSION: '17'
+  NODE_VERSION: '22.22.0'
+
+jobs:
+  # ==========================================
+  # CODE QUALITY CHECKS
+  # ==========================================
+  code-quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better analysis
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Run Maven checkstyle (if configured)
+        continue-on-error: true
+        run: |
+          if grep -q "maven-checkstyle-plugin" pom.xml; then
+            mvn checkstyle:check
+          else
+            echo "Checkstyle not configured, skipping..."
+          fi
+
+      - name: Check for common issues
+        run: |
+          echo "Checking for common Java issues..."
+          # Check for System.out.println
+          if grep -r "System.out.println" src/main/java/ --exclude-dir=test; then
+            echo "⚠️ Warning: Found System.out.println in source code"
+          fi
+
+  # ==========================================
+  # BUILD & TEST
+  # ==========================================
+  build-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Build Tailwind CSS
+        run: npm run build
+
+      - name: Build project
+        run: mvn clean package -DskipTests
+
+      - name: Run tests with coverage
+        run: mvn test
+
+      - name: Verify JAR created
+        run: |
+          if [ ! -f target/*.jar ]; then
+            echo "❌ JAR file not found!"
+            exit 1
+          fi
+          echo "✅ JAR file created successfully"
+
+      - name: Comment PR with build status
+        uses: actions/github-script@v7
+        if: always()
+        with:
+          script: |
+            const status = '${{ job.status }}' === 'success' ? '✅ Build successful' : '❌ Build failed';
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## Build Status\n\n${status}\n\n- Java Version: ${{ env.JAVA_VERSION }}\n- Node Version: ${{ env.NODE_VERSION }}`
+            })
+
+  # ==========================================
+  # DOCKER BUILD TEST
+  # ==========================================
+  docker-test:
+    name: Docker Build Test
+    runs-on: ubuntu-latest
+    needs: build-test
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image (no push)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: test-image:pr-${{ github.event.pull_request.number }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Test Docker image
+        run: |
+          docker build -t test-image:pr-${{ github.event.pull_request.number }} .
+          docker run -d -e PORT=10000 -p 10000:10000 --name test-container test-image:pr-${{ github.event.pull_request.number }}
+          sleep 15
+          
+          if curl -f http://localhost:10000; then
+            echo "✅ Docker container is running successfully"
+            docker stop test-container
+            exit 0
+          else
+            echo "❌ Docker container failed to start properly"
+            docker logs test-container
+            docker stop test-container
+            exit 1
+          fi
+
+  # ==========================================
+  # SIZE CHECK
+  # ==========================================
+  size-check:
+    name: Check Build Size
+    runs-on: ubuntu-latest
+    needs: build-test
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Build project
+        run: |
+          npm ci
+          npm run build
+          mvn clean package -DskipTests
+
+      - name: Check JAR size
+        run: |
+          JAR_SIZE=$(du -h target/*.jar | cut -f1)
+          echo "📦 JAR Size: $JAR_SIZE"
+          
+          # Check if JAR is too large (>100MB)
+          JAR_SIZE_MB=$(du -m target/*.jar | cut -f1)
+          if [ $JAR_SIZE_MB -gt 100 ]; then
+            echo "⚠️ Warning: JAR file is larger than 100MB"
+          fi
+
+      - name: Comment JAR size on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const jarPath = fs.readdirSync('target').find(f => f.endsWith('.jar'));
+            const stats = fs.statSync(path.join('target', jarPath));
+            const sizeMB = (stats.size / (1024 * 1024)).toFixed(2);
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 📦 Build Artifact Size\n\n- **JAR File**: ${jarPath}\n- **Size**: ${sizeMB} MB`
+            })

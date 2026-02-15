@@ -1,4 +1,4 @@
-package com.hoangluongtran0309.personal_blog.infrastructure.config;
+package com.hoangluongtran0309.personal_blog.infrastructure.web;
 
 import java.util.Locale;
 
@@ -11,7 +11,7 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 @Configuration
-public class LocaleConfig {
+public class WebConfig {
 
     @Bean
     public LocaleResolver localeResolver() {

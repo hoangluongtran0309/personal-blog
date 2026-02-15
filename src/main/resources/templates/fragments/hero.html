@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- HERO SECTION FRAGMENT -->
+<div th:fragment="hero" class="bg-light-bg-primary dark:bg-dark-bg-primary transition-colors duration-300 pt-8 pb-20 text-center lg:text-left">
+  <div class="container mx-auto px-4 sm:px-8 lg:px-8 max-w-[1150px] lg:grid lg:grid-cols-2 lg:items-center lg:gap-12">
+    
+    <div class="left">
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-light-fg-primary dark:text-dark-fg-primary transition-colors duration-300 mb-4 leading-tight">
+        <span th:text="#{hero.greeting}">Hi, I'm</span> 
+        <b class="text-accent font-black" th:text="${author?.name} ?: #{hero.default.name}">Hoang Luong Tran</b>.
+        <br><span th:text="${author?.title} ?: #{hero.default.title}">Web Developer</span>
+      </h1>
+
+      <p class="text-xl sm:text-2xl text-light-fg-secondary dark:text-dark-fg-secondary transition-colors duration-300 mb-8">
+        <span th:text="#{hero.specialized}">Specialized in</span> 
+        <abbr title="Accessibility" th:title="#{hero.specialized.a11y}">a11y</abbr>
+        <span th:text="#{hero.specialized.performance}" th:remove="tag">and Core Web Vitals</span>
+      </p>
+
+      <div class="flex flex-wrap justify-center lg:justify-start gap-4 lg:gap-8">
+        <a th:href="@{/contact}" 
+           class="min-w-[10rem] px-5 py-3 bg-accent text-white rounded-full hover:bg-light-fg-secondary hover:text-light-action-primary dark:hover:bg-dark-fg-secondary dark:hover:text-dark-bg-primary transition-colors duration-300"
+           th:text="#{hero.button.contact}">Contact Me</a>
+        <a th:href="@{/about}" 
+           class="min-w-[10rem] px-4 py-2 bg-light-action-secondary dark:bg-dark-action-secondary text-light-fg-secondary dark:text-dark-fg-secondary border-[3px] border-light-fg-tertiary dark:border-dark-fg-tertiary rounded-full hover:border-accent transition-colors duration-300"
+           th:text="#{hero.button.about}">About Me</a>
+      </div>
+    </div>
+
+    <div class="right hidden lg:flex relative justify-center items-center mt-12 lg:mt-0">
+      <div class="pattern-bg absolute top-1/2 -translate-y-1/2 w-full h-[200px] opacity-20" th:style="'background: url(' + @{/images/pattern.png} + '); background-size: contain;'"></div>
+      
+      <div class="img-box relative z-10">
+        <img th:src="@{${author?.image} ?: '/images/hero.png'}" 
+             th:alt="${author?.name} ?: #{hero.default.name}" 
+             class="w-full h-full object-contain rounded-bl-[230px] rounded-br-[280px] transform translate-x-2.5 -translate-y-2.5">
+        <div class="shape-1 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[42%] rotate-[-20deg] bg-accent w-[90%] h-[90%] rounded-full -z-10"></div>
+        <div class="shape-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[42%] rotate-[-20deg] w-[92%] h-[92%] rounded-full z-20 shadow-[inset_0_-30px_0_hsl(214,32%,91%)] dark:shadow-[inset_0_-30px_0_hsl(216,15%,52%)] transition-shadow duration-300"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

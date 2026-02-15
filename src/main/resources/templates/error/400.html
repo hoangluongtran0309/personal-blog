@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+      
+<head>
+  <title th:text="#{error.400.title}">400 - Bad Request | DevBlog</title>
+</head>
+
+<body>
+
+<!-- MAIN CONTENT -->
+<div layout:fragment="content">
+  
+  <!-- ERROR 400 SECTION -->
+  <div class="bg-light-bg-secondary dark:bg-dark-bg-secondary py-20 min-h-[calc(100vh-200px)] flex items-center">
+    <div class="container mx-auto px-4 sm:px-8 lg:px-8 max-w-[800px] text-center">
+      
+      <!-- Error Code -->
+      <div class="mb-8">
+        <h1 class="text-[120px] sm:text-[180px] lg:text-[220px] font-black text-accent leading-none mb-4">
+          400
+        </h1>
+        <div class="flex items-center justify-center gap-4 mb-6">
+          <div class="w-16 h-1 bg-light-action-primary dark:bg-dark-action-primary rounded-full"></div>
+          <ion-icon name="alert-circle-outline" class="text-5xl text-light-fg-secondary dark:text-dark-fg-secondary"></ion-icon>
+          <div class="w-16 h-1 bg-light-action-primary dark:bg-dark-action-primary rounded-full"></div>
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      <div class="mb-12">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-light-fg-primary dark:text-dark-fg-primary mb-6" 
+            th:text="#{error.400.heading}">
+          Bad Request
+        </h2>
+        <p class="text-lg sm:text-xl text-light-fg-secondary dark:text-dark-fg-secondary max-w-2xl mx-auto mb-4" 
+           th:text="#{error.400.message1}">
+          The server cannot process your request due to invalid syntax or malformed data.
+        </p>
+        <p class="text-base text-light-fg-secondary dark:text-dark-fg-secondary" 
+           th:text="#{error.400.message2}">
+          Please check your input and try again.
+        </p>
+      </div>
+
+      <!-- Error Details (if available) -->
+      <div th:if="${errorMessage}" class="bg-light-bg-primary dark:bg-dark-bg-primary rounded-xl p-6 shadow-md mb-12 max-w-2xl mx-auto">
+        <div class="flex items-start gap-3 text-left">
+          <ion-icon name="information-circle-outline" class="text-2xl text-accent flex-shrink-0 mt-1"></ion-icon>
+          <div>
+            <h3 class="text-lg font-bold text-light-fg-primary dark:text-dark-fg-primary mb-2" 
+                th:text="#{error.400.details}">
+              Error Details
+            </h3>
+            <p class="text-light-fg-secondary dark:text-dark-fg-secondary" th:text="${errorMessage}">
+              Error message will appear here
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap justify-center gap-4 mb-12">
+        <a th:href="@{/}" 
+           class="min-w-[10rem] px-6 py-3 bg-accent text-white rounded-full hover:bg-light-fg-secondary hover:text-light-action-primary dark:hover:bg-dark-fg-secondary dark:hover:text-dark-bg-primary transition-all font-bold"
+           th:text="#{error.400.goHome}">
+          Go Home
+        </a>
+        <button onclick="history.back()" 
+                class="min-w-[10rem] px-6 py-3 bg-light-action-secondary dark:bg-dark-action-secondary text-light-fg-secondary dark:text-dark-fg-secondary border-[3px] border-light-fg-tertiary dark:border-dark-fg-tertiary rounded-full hover:border-accent transition-all font-bold"
+                th:text="#{error.400.goBack}">
+          Go Back
+        </button>
+      </div>
+
+      <!-- Help Section -->
+      <div class="bg-light-bg-primary dark:bg-dark-bg-primary rounded-xl p-8 shadow-md">
+        <h3 class="text-xl font-bold text-light-fg-primary dark:text-dark-fg-primary mb-6" 
+            th:text="#{error.400.solutions}">
+          Common Solutions
+        </h3>
+        <ul class="text-left space-y-3 max-w-md mx-auto">
+          <li class="flex items-start gap-3">
+            <ion-icon name="checkmark-circle-outline" class="text-xl text-accent flex-shrink-0 mt-1"></ion-icon>
+            <span class="text-light-fg-secondary dark:text-dark-fg-secondary" 
+                  th:text="#{error.400.solution1}">
+              Check that all required fields are filled correctly
+            </span>
+          </li>
+          <li class="flex items-start gap-3">
+            <ion-icon name="checkmark-circle-outline" class="text-xl text-accent flex-shrink-0 mt-1"></ion-icon>
+            <span class="text-light-fg-secondary dark:text-dark-fg-secondary" 
+                  th:text="#{error.400.solution2}">
+              Verify that your input matches the expected format
+            </span>
+          </li>
+          <li class="flex items-start gap-3">
+            <ion-icon name="checkmark-circle-outline" class="text-xl text-accent flex-shrink-0 mt-1"></ion-icon>
+            <span class="text-light-fg-secondary dark:text-dark-fg-secondary" 
+                  th:text="#{error.400.solution3}">
+              Clear your browser cache and try again
+            </span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

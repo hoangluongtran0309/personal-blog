@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+      
+<head>
+  <title th:text="#{error.500.title}">500 - Internal Server Error | DevBlog</title>
+</head>
+
+<body>
+
+<!-- MAIN CONTENT -->
+<div layout:fragment="content">
+  
+  <!-- ERROR 500 SECTION -->
+  <div class="bg-light-bg-secondary dark:bg-dark-bg-secondary py-20 min-h-[calc(100vh-200px)] flex items-center">
+    <div class="container mx-auto px-4 sm:px-8 lg:px-8 max-w-[800px] text-center">
+      
+      <!-- Error Code -->
+      <div class="mb-8">
+        <h1 class="text-[120px] sm:text-[180px] lg:text-[220px] font-black text-accent leading-none mb-4">
+          500
+        </h1>
+        <div class="flex items-center justify-center gap-4 mb-6">
+          <div class="w-16 h-1 bg-light-action-primary dark:bg-dark-action-primary rounded-full"></div>
+          <ion-icon name="bug-outline" class="text-5xl text-light-fg-secondary dark:text-dark-fg-secondary"></ion-icon>
+          <div class="w-16 h-1 bg-light-action-primary dark:bg-dark-action-primary rounded-full"></div>
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      <div class="mb-12">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-light-fg-primary dark:text-dark-fg-primary mb-6" 
+            th:text="#{error.500.heading}">
+          Internal Server Error
+        </h2>
+        <p class="text-lg sm:text-xl text-light-fg-secondary dark:text-dark-fg-secondary max-w-2xl mx-auto mb-4" 
+           th:text="#{error.500.message1}">
+          Something went wrong on our end. We're working to fix it!
+        </p>
+        <p class="text-base text-light-fg-secondary dark:text-dark-fg-secondary" 
+           th:text="#{error.500.message2}">
+          Our team has been notified and we'll resolve this issue as soon as possible.
+        </p>
+      </div>
+
+      <!-- Error ID (if available) -->
+      <div th:if="${errorId}" class="bg-light-bg-primary dark:bg-dark-bg-primary rounded-xl p-6 shadow-md mb-12 max-w-2xl mx-auto">
+        <div class="flex items-start gap-3 text-left">
+          <ion-icon name="code-slash-outline" class="text-2xl text-accent flex-shrink-0 mt-1"></ion-icon>
+          <div>
+            <h3 class="text-lg font-bold text-light-fg-primary dark:text-dark-fg-primary mb-2" 
+                th:text="#{error.500.reference}">
+              Error Reference
+            </h3>
+            <p class="text-light-fg-secondary dark:text-dark-fg-secondary">
+              <span th:text="#{error.500.errorId}">Error ID:</span> 
+              <code class="bg-light-action-secondary dark:bg-dark-action-secondary px-2 py-1 rounded font-mono text-sm" th:text="${errorId}">ABC123XYZ</code>
+            </p>
+            <p class="text-sm text-light-fg-secondary dark:text-dark-fg-secondary mt-2" 
+               th:text="#{error.500.includeId}">
+              Please include this error ID when contacting support.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap justify-center gap-4 mb-12">
+        <button onclick="location.reload()" 
+                class="min-w-[10rem] px-6 py-3 bg-accent text-white rounded-full hover:bg-light-fg-secondary hover:text-light-action-primary dark:hover:bg-dark-fg-secondary dark:hover:text-dark-bg-primary transition-all font-bold"
+                th:text="#{error.500.tryAgain}">
+          Try Again
+        </button>
+        <a th:href="@{/}" 
+           class="min-w-[10rem] px-6 py-3 bg-light-action-secondary dark:bg-dark-action-secondary text-light-fg-secondary dark:text-dark-fg-secondary border-[3px] border-light-fg-tertiary dark:border-dark-fg-tertiary rounded-full hover:border-accent transition-all font-bold"
+           th:text="#{error.500.goHome}">
+          Go Home
+        </a>
+      </div>
+
+      <!-- Help Section -->
+      <div class="bg-light-bg-primary dark:bg-dark-bg-primary rounded-xl p-8 shadow-md">
+        <h3 class="text-xl font-bold text-light-fg-primary dark:text-dark-fg-primary mb-6" 
+            th:text="#{error.500.whatYouCanDo}">
+          What You Can Do
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-left max-w-2xl mx-auto">
+          <div class="flex items-start gap-3">
+            <ion-icon name="refresh-outline" class="text-xl text-accent flex-shrink-0 mt-1"></ion-icon>
+            <div>
+              <h4 class="font-bold text-light-fg-primary dark:text-dark-fg-primary mb-1" 
+                  th:text="#{error.500.action.refresh}">Refresh</h4>
+              <p class="text-sm text-light-fg-secondary dark:text-dark-fg-secondary" 
+                 th:text="#{error.500.action.refresh.desc}">Try reloading the page</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <ion-icon name="time-outline" class="text-xl text-accent flex-shrink-0 mt-1"></ion-icon>
+            <div>
+              <h4 class="font-bold text-light-fg-primary dark:text-dark-fg-primary mb-1" 
+                  th:text="#{error.500.action.wait}">Wait</h4>
+              <p class="text-sm text-light-fg-secondary dark:text-dark-fg-secondary" 
+                 th:text="#{error.500.action.wait.desc}">Check back in a few minutes</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <ion-icon name="home-outline" class="text-xl text-accent flex-shrink-0 mt-1"></ion-icon>
+            <div>
+              <h4 class="font-bold text-light-fg-primary dark:text-dark-fg-primary mb-1" 
+                  th:text="#{error.500.action.home}">Go Home</h4>
+              <p class="text-sm text-light-fg-secondary dark:text-dark-fg-secondary" 
+                 th:text="#{error.500.action.home.desc}">Return to our homepage</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <ion-icon name="mail-outline" class="text-xl text-accent flex-shrink-0 mt-1"></ion-icon>
+            <div>
+              <h4 class="font-bold text-light-fg-primary dark:text-dark-fg-primary mb-1" 
+                  th:text="#{error.500.action.contact}">Contact Us</h4>
+              <p class="text-sm text-light-fg-secondary dark:text-dark-fg-secondary" 
+                 th:text="#{error.500.action.contact.desc}">Report the issue to our team</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Support Link -->
+        <div class="mt-8 pt-6 border-t border-light-action-primary dark:border-dark-action-primary">
+          <a th:href="@{/contact}" class="inline-flex items-center gap-2 text-accent hover:underline font-medium">
+            <ion-icon name="chatbubbles-outline" class="text-xl"></ion-icon>
+            <span th:text="#{error.500.contactSupport}">Contact Support Team</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

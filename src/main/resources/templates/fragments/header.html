@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- HEADER FRAGMENT -->
+<header th:fragment="header" class="bg-light-bg-primary dark:bg-dark-bg-primary transition-colors duration-300">
+  <div class="container mx-auto px-4 sm:px-8 lg:px-8 max-w-[1150px]">
+    <nav class="flex justify-between items-center gap-4 py-4 lg:py-8">
+      
+      <!-- Logo -->
+      <a th:href="@{/}">
+        <img th:src="@{/svg/logo-light.svg}" th:alt="#{meta.title}" width="150" height="40" class="logo-light dark:hidden">
+        <img th:src="@{/svg/logo-dark.svg}" th:alt="#{meta.title}" width="150" height="40" class="logo-dark hidden dark:block">
+      </a>
+
+      <!-- Mobile Buttons -->
+      <div class="flex items-center gap-4 lg:hidden">
+        <button class="theme-btn-mobile w-10 h-10 flex justify-center items-center bg-light-action-secondary dark:bg-dark-action-secondary text-light-fg-tertiary dark:text-dark-fg-tertiary rounded-full text-2xl hover:bg-accent hover:text-white transition-colors duration-300">
+          <ion-icon name="moon" class="moon hidden dark:block"></ion-icon>
+          <ion-icon name="sunny" class="sun dark:hidden"></ion-icon>
+        </button>
+
+        <button class="nav-menu-btn w-10 h-10 flex justify-center items-center bg-light-action-secondary dark:bg-dark-action-secondary text-light-fg-tertiary dark:text-dark-fg-tertiary rounded-full text-2xl hover:bg-accent hover:text-white transition-colors duration-300">
+          <ion-icon name="menu-outline"></ion-icon>
+        </button>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden lg:flex items-center gap-8">
+        <ul class="flex items-center gap-8">
+          <li>
+            <a th:href="@{/}" 
+               th:classappend="${#strings.equals(activePage, 'home')} ? 'text-accent' : ''"
+               class="text-light-fg-secondary dark:text-dark-fg-secondary font-bold hover:text-accent dark:hover:text-accent transition-colors duration-300"
+               th:text="#{header.nav.home}">
+              Home
+            </a>
+          </li>
+          <li>
+            <a th:href="@{/about}" 
+               th:classappend="${#strings.equals(activePage, 'about')} ? 'text-accent' : ''"
+               class="text-light-fg-secondary dark:text-dark-fg-secondary font-bold hover:text-accent dark:hover:text-accent transition-colors duration-300"
+               th:text="#{header.nav.about}">
+              About Me
+            </a>
+          </li>
+          <li>
+            <a th:href="@{/contact}" 
+               th:classappend="${#strings.equals(activePage, 'contact')} ? 'text-accent' : ''"
+               class="text-light-fg-secondary dark:text-dark-fg-secondary font-bold hover:text-accent dark:hover:text-accent transition-colors duration-300"
+               th:text="#{header.nav.contact}">
+              Contact
+            </a>
+          </li>
+        </ul>
+
+        <button class="theme-btn-desktop relative w-[52px] h-[26px] flex justify-center items-center gap-2.5 rounded-full overflow-hidden bg-gradient-to-br from-[#ff7c6b] to-[#fed54c] dark:from-[#3265ff] dark:to-[#ac14b7] transition-colors duration-300">
+          <ion-icon name="moon" class="text-white text-sm"></ion-icon>
+          <ion-icon name="sunny" class="text-white text-sm"></ion-icon>
+          <span class="absolute top-1/2 left-[3px] dark:left-[calc(100%-24px)] w-[21px] h-[21px] bg-white rounded-full -translate-y-1/2 shadow-md z-10 transition-all duration-300"></span>
+        </button>
+      </div>
+
+      <!-- Mobile Navigation -->
+      <div class="mobile-nav fixed inset-0 bg-light-bg-primary dark:bg-dark-bg-primary transition-colors duration-300 p-8 pt-20 overflow-auto z-50 transform translate-x-full" style="transition: transform 500ms, background-color 300ms, color 300ms;">
+        <button class="nav-close-btn absolute top-5 right-5 w-10 h-10 flex justify-center items-center bg-light-action-secondary dark:bg-dark-action-secondary text-light-fg-tertiary dark:text-dark-fg-tertiary rounded-full text-2xl hover:bg-accent hover:text-white transition-colors duration-300">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+
+        <div class="pb-5 mb-5 border-b border-light-action-primary dark:border-dark-action-primary transition-colors duration-300">
+          <p class="text-xl font-bold text-light-fg-primary dark:text-dark-fg-primary transition-colors duration-300 mb-4" th:text="#{header.mobile.menu}">Main Menu</p>
+          <ul>
+            <li class="mb-2">
+              <a th:href="@{/}" 
+                 class="text-xl text-light-fg-secondary dark:text-dark-fg-secondary hover:text-accent dark:hover:text-accent transition-colors duration-300"
+                 th:text="#{header.nav.home}">Home</a>
+            </li>
+            <li class="mb-2">
+              <a th:href="@{/about}" 
+                 class="text-xl text-light-fg-secondary dark:text-dark-fg-secondary hover:text-accent dark:hover:text-accent transition-colors duration-300"
+                 th:text="#{header.nav.about}">About Me</a>
+            </li>
+            <li class="mb-2">
+              <a th:href="@{/contact}" 
+                 class="text-xl text-light-fg-secondary dark:text-dark-fg-secondary hover:text-accent dark:hover:text-accent transition-colors duration-300"
+                 th:text="#{header.nav.contact}">Contact</a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <p class="text-xl font-bold text-light-fg-primary dark:text-dark-fg-primary transition-colors duration-300 mb-4" th:text="#{header.mobile.topics}">Topics</p>
+          <ul>
+            <li class="mb-2">
+              <a th:href="@{/topics/database}" 
+                 class="text-xl text-light-fg-secondary dark:text-dark-fg-secondary hover:text-accent dark:hover:text-accent transition-colors duration-300"
+                 th:text="#{topic.database}">Database</a>
+            </li>
+            <li class="mb-2">
+              <a th:href="@{/topics/accessibility}" 
+                 class="text-xl text-light-fg-secondary dark:text-dark-fg-secondary hover:text-accent dark:hover:text-accent transition-colors duration-300"
+                 th:text="#{topic.accessibility}">Accessibility</a>
+            </li>
+            <li class="mb-2">
+              <a th:href="@{/topics/performance}" 
+                 class="text-xl text-light-fg-secondary dark:text-dark-fg-secondary hover:text-accent dark:hover:text-accent transition-colors duration-300"
+                 th:text="#{topic.performance}">Web Performance</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </nav>
+  </div>
+</header>
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+
+<head>
+  <title th:text="#{meta.title}">
+    DevBlog - Hoang Luong Tran's Personal Blog
+  </title>
+</head>
+
+<body>
+  
+<div layout:fragment="content">
+  
+  <!-- HERO SECTION -->
+  <th:block th:replace="~{fragments/hero :: hero}"></th:block>
+
+  <!-- MAIN SECTION -->
+  <div class="bg-light-bg-secondary dark:bg-dark-bg-secondary transition-colors duration-300 py-20">
+    <div class="container mx-auto px-4 sm:px-8 lg:px-8 max-w-[1150px] lg:grid lg:grid-cols-[5fr_2fr] lg:gap-16">
+      
+      <!-- BLOG SECTION -->
+      <div class="blog">
+        <h2 class="text-2xl sm:text-3xl lg:text-5xl font-bold text-light-fg-primary dark:text-dark-fg-primary transition-colors duration-300 mb-12 text-center sm:text-left sm:pl-8 sm:relative before:content-[''] before:absolute before:top-0 before:left-0 before:bg-light-action-primary dark:before:bg-dark-action-primary before:w-[5px] before:h-full before:rounded-md before:transition-colors before:duration-300"
+            th:text="#{blog.section.latest}">
+          Latest Blog Post
+        </h2>
+
+        <div class="blog-card-group mb-12">
+          <!-- Blog cards -->
+          <!-- Blog posts will be dynamically inserted here -->
+        </div>
+
+        <button class="mx-auto min-w-[10rem] px-5 py-3 bg-light-fg-secondary dark:bg-dark-fg-secondary text-light-bg-secondary dark:text-dark-bg-secondary rounded-full hover:bg-accent hover:text-white dark:hover:text-white transition-colors duration-300 block"
+                th:text="#{blog.button.loadMore}">
+          Load More
+        </button>
+      </div>
+
+      <!-- SIDEBAR -->
+      <th:block th:replace="~{fragments/sidebar :: sidebar}"></th:block>
+
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

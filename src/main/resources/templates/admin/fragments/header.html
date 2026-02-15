@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- HEADER FRAGMENT -->
+<header th:fragment="header"
+  class="bg-light-bg-primary dark:bg-dark-bg-primary shadow-sm sticky top-0 z-30 transition-colors duration-300">
+  <div class="flex items-center justify-between px-6 py-4">
+    <button class="admin-sidebar-menu-btn lg:hidden text-2xl text-light-fg-secondary dark:text-dark-fg-secondary hover:text-accent transition-colors duration-300">
+      <ion-icon name="menu-outline" class="transition-colors duration-300"></ion-icon>
+    </button>
+
+    <div class="flex items-center gap-4 ml-auto">
+      <!-- Mobile Theme Button -->
+      <button class="admin-theme-btn-mobile lg:hidden w-10 h-10 flex justify-center items-center bg-light-action-secondary dark:bg-dark-action-secondary text-light-fg-tertiary dark:text-dark-fg-tertiary rounded-full text-2xl hover:bg-accent hover:text-white transition-all">
+        <ion-icon name="moon" class="moon hidden dark:block transition-opacity duration-300"></ion-icon>
+        <ion-icon name="sunny" class="sun dark:hidden transition-opacity duration-300"></ion-icon>
+      </button>
+
+      <!-- Desktop Theme Button -->
+      <button class="admin-theme-btn-desktop hidden lg:flex relative w-[52px] h-[26px] justify-center items-center gap-2.5 rounded-full overflow-hidden transition-all bg-gradient-to-br from-[#ff7c6b] to-[#fed54c] dark:from-[#3265ff] dark:to-[#ac14b7]">
+        <ion-icon name="moon" class="text-white text-sm transition-opacity duration-300"></ion-icon>
+        <ion-icon name="sunny" class="text-white text-sm transition-opacity duration-300"></ion-icon>
+        <span class="absolute top-1/2 left-[3px] dark:left-[calc(100%-24px)] w-[21px] h-[21px] bg-white rounded-full -translate-y-1/2 shadow-md z-10 transition-all duration-300"></span>
+      </button>
+
+      <div class="flex items-center gap-2">
+        <div class="w-10 h-10 bg-accent rounded-full flex items-center justify-center text-white font-bold transition-colors duration-300"
+             th:text="${currentUser?.initials} ?: 'HL'">
+          HL
+        </div>
+        <div class="hidden sm:block">
+          <p class="text-sm font-medium transition-colors duration-300" th:text="${currentUser?.name} ?: 'Hoang Luong Tran'">Hoang Luong Tran</p>
+          <p class="text-xs text-light-fg-secondary dark:text-dark-fg-secondary transition-colors duration-300"
+             th:text="${currentUser?.role} ?: 'Admin'">
+            Admin
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- FOOTER FRAGMENT -->
+<footer th:fragment="footer" class="bg-light-bg-primary dark:bg-dark-bg-primary transition-colors duration-300">
+  <div class="container mx-auto px-4 sm:px-8 lg:px-8 max-w-[1150px] py-20 grid grid-cols-1 sm:grid-cols-[2fr_1fr_1fr] gap-8">
+    
+    <div class="wrapper text-center sm:text-left">
+      <a th:href="@{/}" class="footer-logo inline-block mb-2.5">
+        <img th:src="@{/svg/logo-light.svg}" th:alt="#{meta.title}" width="150" height="40" class="logo-light dark:hidden">
+        <img th:src="@{/svg/logo-dark.svg}" th:alt="#{meta.title}" width="150" height="40" class="logo-dark hidden dark:block">
+      </a>
+
+      <p class="text-light-fg-secondary dark:text-dark-fg-secondary transition-colors duration-300 max-w-xs mx-auto sm:mx-0" th:text="#{footer.description}">
+        Learn about Backend development, Spring Boot, System Design, and Database management.
+      </p>
+    </div>
+
+    <div class="wrapper text-center sm:text-left">
+      <p class="text-light-fg-primary dark:text-dark-fg-primary transition-colors duration-300 font-bold text-lg mb-2" th:text="#{footer.quickLinks}">Quick Links</p>
+
+      <ul>
+        <li class="mb-1">
+          <a th:href="@{/advertise}" 
+             class="text-light-fg-secondary dark:text-dark-fg-secondary hover:text-accent dark:hover:text-accent transition-colors duration-300"
+             th:text="#{footer.advertise}">Advertise with us</a>
+        </li>
+        <li class="mb-1">
+          <a th:href="@{/about}" 
+             class="text-light-fg-secondary dark:text-dark-fg-secondary hover:text-accent dark:hover:text-accent transition-colors duration-300"
+             th:text="#{footer.about}">About Us</a>
+        </li>
+        <li class="mb-1">
+          <a th:href="@{/contact}" 
+             class="text-light-fg-secondary dark:text-dark-fg-secondary hover:text-accent dark:hover:text-accent transition-colors duration-300"
+             th:text="#{footer.contact}">Contact Us</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="wrapper text-center sm:text-left">
+      <p class="text-light-fg-primary dark:text-dark-fg-primary transition-colors duration-300 font-bold text-lg mb-2" th:text="#{footer.legal}">Legal Stuff</p>
+
+      <ul>
+        <li class="mb-1">
+          <a th:href="@{/privacy}" 
+             class="text-light-fg-secondary dark:text-dark-fg-secondary hover:text-accent dark:hover:text-accent transition-colors duration-300"
+             th:text="#{footer.privacy}">Privacy Notice</a>
+        </li>
+        <li class="mb-1">
+          <a th:href="@{/cookies}" 
+             class="text-light-fg-secondary dark:text-dark-fg-secondary hover:text-accent dark:hover:text-accent transition-colors duration-300"
+             th:text="#{footer.cookies}">Cookie Policy</a>
+        </li>
+        <li class="mb-1">
+          <a th:href="@{/terms}" 
+             class="text-light-fg-secondary dark:text-dark-fg-secondary hover:text-accent dark:hover:text-accent transition-colors duration-300"
+             th:text="#{footer.terms}">Terms Of Use</a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+  <p class="copyright text-light-fg-secondary dark:text-dark-fg-secondary transition-colors duration-300 text-sm text-center py-4 border-t border-light-action-primary dark:border-dark-action-primary">
+    <span th:text="#{footer.copyright}">Copyright</span> &copy; <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2026</span> 
+    <a th:href="@{/}" class="text-accent font-medium hover:underline transition-colors duration-300">hoangluongtran</a>
+  </p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html th:lang="|${#locale.language}-${#locale.country}|"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="#{admin.login.pageTitle}">Admin Login - DevBlog</title>
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" th:href="@{/icons/favicon.ico}" type="image/x-icon">
+
+  <!-- Tailwind CSS -->
+  <link th:href="@{/css/application.css}" rel="stylesheet">
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-light-bg-secondary dark:bg-dark-bg-secondary text-light-fg-primary dark:text-dark-fg-primary transition-colors duration-300">
+
+  <div class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+      
+      <!-- Login Card -->
+      <div class="bg-light-bg-primary dark:bg-dark-bg-primary rounded-2xl shadow-xl p-8 transition-colors duration-300">
+        
+        <!-- Logo & Title -->
+        <div class="text-center mb-8">
+          <!-- Logo -->
+          <div class="flex justify-center">
+            <a th:href="@{/}">
+              <img th:src="@{/svg/logo-light.svg}" th:alt="#{meta.title}" width="150" height="40" class="logo-light dark:hidden">
+              <img th:src="@{/svg/logo-dark.svg}" th:alt="#{meta.title}" width="150" height="40" class="logo-dark hidden dark:block">
+            </a>
+          </div>
+          <h1 class="text-3xl font-bold text-accent mb-2 transition-colors duration-300" th:text="#{admin.login.title}">Admin Login</h1>
+          <p class="text-light-fg-secondary dark:text-dark-fg-secondary transition-colors duration-300" th:text="#{admin.login.subtitle}">Log in to manage DevBlog</p>
+        </div>
+
+        <!-- Login Form -->
+        <form th:action="@{/admin/login}" method="post" id="loginForm" class="space-y-6 transition-colors duration-300">
+          
+          <!-- CSRF Token (Spring Security) -->
+          <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/> -->
+          
+          <!-- Username -->
+          <div>
+            <label for="username" class="block text-sm font-medium mb-2 transition-colors duration-300" th:text="#{admin.login.username}">
+              Username
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <ion-icon name="person-outline" class="text-xl text-light-fg-tertiary dark:text-dark-fg-tertiary"></ion-icon>
+              </div>
+              <input 
+                type="text" 
+                id="username" 
+                name="username"
+                required
+                autocomplete="username"
+                th:value="${username}"
+                class="w-full pl-10 pr-4 py-3 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-colors duration-300"
+                placeholder="admin"
+              >
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div>
+            <label for="password" class="block text-sm font-medium mb-2 transition-colors duration-300" th:text="#{admin.login.password}">
+              Password
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <ion-icon name="lock-closed-outline" class="text-xl text-light-fg-tertiary dark:text-dark-fg-tertiary"></ion-icon>
+              </div>
+              <input 
+                type="password" 
+                id="password" 
+                name="password"
+                required
+                autocomplete="current-password"
+                class="w-full pl-10 pr-12 py-3 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-colors duration-300"
+                placeholder="••••••••"
+              >
+              <button 
+                type="button" 
+                id="togglePassword"
+                class="absolute inset-y-0 right-0 pr-3 flex items-center text-light-fg-tertiary dark:text-dark-fg-tertiary hover:text-accent"
+              >
+                <ion-icon name="eye-outline" class="text-xl eye-icon"></ion-icon>
+                <ion-icon name="eye-off-outline" class="text-xl eye-off-icon hidden"></ion-icon>
+              </button>
+            </div>
+          </div>
+
+          <!-- Remember Me -->
+          <div class="flex items-center justify-between">
+            <label class="flex items-center cursor-pointer">
+              <input 
+                type="checkbox" 
+                id="rememberMe"
+                name="remember-me"
+                class="w-4 h-4 text-accent bg-light-action-secondary dark:bg-dark-action-secondary border-light-fg-tertiary dark:border-dark-fg-tertiary rounded focus:ring-accent focus:ring-2"
+              >
+              <span class="ml-2 text-sm" th:text="#{admin.login.rememberMe}">Remember me</span>
+            </label>
+          </div>
+
+          <!-- Error Message -->
+          <div th:if="${param.error}" 
+               class="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
+            <div class="flex items-center gap-2">
+              <ion-icon name="alert-circle-outline" class="text-xl"></ion-icon>
+              <span th:text="#{admin.login.error.badCredentials}">Incorrect username or password!</span>
+            </div>
+          </div>
+
+          <!-- Success Message (Logout) -->
+          <div th:if="${param.logout}" 
+               class="bg-green-100 dark:bg-green-900/20 border border-green-400 dark:border-green-600 text-green-700 dark:text-green-400 px-4 py-3 rounded-lg text-sm">
+            <div class="flex items-center gap-2">
+              <ion-icon name="checkmark-circle-outline" class="text-xl"></ion-icon>
+              <span th:text="#{admin.login.logoutSuccess}">Logout successful!</span>
+            </div>
+          </div>
+
+          <!-- Custom Error Message -->
+          <div th:if="${errorMessage}" 
+               class="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
+            <div class="flex items-center gap-2">
+              <ion-icon name="alert-circle-outline" class="text-xl"></ion-icon>
+              <span th:text="${errorMessage}">Error message</span>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button 
+            type="submit"
+            class="w-full px-6 py-3 bg-accent text-white rounded-lg font-semibold hover:bg-opacity-90 transition-all flex items-center justify-center gap-2"
+          >
+            <ion-icon name="log-in-outline" class="text-xl"></ion-icon>
+            <span th:text="#{admin.login.submit}">Login</span>
+          </button>
+
+        </form>
+
+        <!-- Theme Toggle -->
+        <div class="mt-6 flex justify-center">
+          <button 
+            id="themeLoginToggle"
+            class="w-12 h-12 flex justify-center items-center bg-light-action-secondary dark:bg-dark-action-secondary text-light-fg-tertiary dark:text-dark-fg-tertiary rounded-full text-2xl hover:bg-accent hover:text-white transition-all"
+          >
+            <ion-icon name="moon" class="moon hidden dark:block"></ion-icon>
+            <ion-icon name="sunny" class="sun dark:hidden"></ion-icon>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Back to Website -->
+      <div class="text-center mt-6">
+        <a th:href="@{/}" class="text-light-fg-secondary dark:text-dark-fg-secondary hover:text-accent transition-colors inline-flex items-center gap-2">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+          <span th:text="#{admin.login.returnWebsite}">Return to website</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Login Script -->
+  <script th:inline="javascript">
+    'use strict';
+
+    const themeLoginToggle = document.getElementById('themeLoginToggle');
+    const toggleLoginTheme = () => {
+      document.documentElement.classList.toggle('dark');
+      const isDark = document.documentElement.classList.contains('dark');
+      localStorage.setItem('loginTheme', isDark ? 'dark' : 'light');
+    };
+
+    themeLoginToggle.addEventListener('click', toggleLoginTheme);
+
+    const savedTheme = localStorage.getItem('loginTheme');
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    }
+
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const eyeIcon = togglePassword.querySelector('.eye-icon');
+    const eyeOffIcon = togglePassword.querySelector('.eye-off-icon');
+
+    togglePassword.addEventListener('click', () => {
+      const type = passwordInput.type === 'password' ? 'text' : 'password';
+      passwordInput.type = type;
+      eyeIcon.classList.toggle('hidden');
+      eyeOffIcon.classList.toggle('hidden');
+    });
+
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+      loginForm.classList.add('animate-shake');
+      setTimeout(() => {
+        loginForm.classList.remove('animate-shake');
+      }, 500);
+    }
+
+  </script>
+
+  <!-- Ionicon -->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+  <style>
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+      20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+
+    .animate-shake {
+      animation: shake 0.5s;
+    }
+  </style>
+
+</body>
+
+</html>

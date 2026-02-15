@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply font-inter;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+        width: 16px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: hsl(229, 76%, 66%);
+        border-radius: 20px;
+        border: 4px solid;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        border-color: #e5e5e5;
+    }
+
+    .dark ::-webkit-scrollbar-thumb {
+        border-color: #252e40;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #e5e5e5;
+    }
+
+    .dark ::-webkit-scrollbar-track {
+        background: #252e40;
+    }
+}
+
+@layer components {
+    /* Custom components can be added here if needed */
+}
+
+@layer utilities {
+
+    /* Line clamp utilities if not using Tailwind v3.3+ */
+    .line-clamp-3 {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+    }
+}

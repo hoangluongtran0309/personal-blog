@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+ <!--
+    ============================================================
+    FRAGMENT: alert
+    ============================================================
+    Dùng chung cho tất cả các trang để hiển thị thông báo.
+
+    PARAMETERS:
+      - type    : 'success' | 'error' | 'warning' | 'info'
+      - message : Nội dung thông báo (String)
+
+    CÁCH SỬ DỤNG:
+    ──────────────────────────────────────────────────────────
+
+    1. Hiển thị theo param URL (success, logout, error):
+       <div th:if="${param.success}"
+            th:replace="~{fragments/alert :: alert('success', #{admin.user.form.success})}">
+       </div>
+
+       <div th:if="${param.logout}"
+            th:replace="~{fragments/alert :: alert('success', #{admin.login.logoutSuccess})}">
+       </div>
+
+       <div th:if="${param.error}"
+            th:replace="~{fragments/alert :: alert('error', #{admin.login.error.badCredentials})}">
+       </div>
+
+    2. Hiển thị theo model attribute (errorMessage, successMessage):
+       <div th:if="${errorMessage}"
+            th:replace="~{fragments/alert :: alert('error', ${errorMessage})}">
+       </div>
+
+       <div th:if="${successMessage}"
+            th:replace="~{fragments/alert :: alert('success', ${successMessage})}">
+       </div>
+
+    ============================================================
+  -->
+
+<!-- HEADER FRAGMENT -->
+  <div th:fragment="alert(type, message)" th:remove="tag">
+
+    <!-- SUCCESS -->
+    <div th:if="${type == 'success'}"
+         class="bg-green-100 dark:bg-green-900/20 border border-green-400 dark:border-green-600 text-green-700 dark:text-green-400 px-4 py-3 rounded-lg text-sm transition-colors duration-300">
+      <div class="flex items-center gap-2">
+        <ion-icon name="checkmark-circle-outline" class="text-xl flex-shrink-0"></ion-icon>
+        <span th:text="${message}">Success message</span>
+      </div>
+    </div>
+
+    <!-- ERROR -->
+    <div th:if="${type == 'error'}"
+         class="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm transition-colors duration-300">
+      <div class="flex items-center gap-2">
+        <ion-icon name="alert-circle-outline" class="text-xl flex-shrink-0"></ion-icon>
+        <span th:text="${message}">Error message</span>
+      </div>
+    </div>
+
+    <!-- WARNING -->
+    <div th:if="${type == 'warning'}"
+         class="bg-yellow-100 dark:bg-yellow-900/20 border border-yellow-400 dark:border-yellow-600 text-yellow-700 dark:text-yellow-400 px-4 py-3 rounded-lg text-sm transition-colors duration-300">
+      <div class="flex items-center gap-2">
+        <ion-icon name="warning-outline" class="text-xl flex-shrink-0"></ion-icon>
+        <span th:text="${message}">Warning message</span>
+      </div>
+    </div>
+
+    <!-- INFO -->
+    <div th:if="${type == 'info'}"
+         class="bg-blue-100 dark:bg-blue-900/20 border border-blue-400 dark:border-blue-600 text-blue-700 dark:text-blue-400 px-4 py-3 rounded-lg text-sm transition-colors duration-300">
+      <div class="flex items-center gap-2">
+        <ion-icon name="information-circle-outline" class="text-xl flex-shrink-0"></ion-icon>
+        <span th:text="${message}">Info message</span>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

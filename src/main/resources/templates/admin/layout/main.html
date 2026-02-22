@@ -32,8 +32,7 @@
     <!-- HEADER -->
     <th:block th:replace="~{admin/fragments/header :: header}"></th:block>
 
-    <!-- CONTENT SECTIONS -->
-    <main class="p-6">
+    <main id="main-content" class="p-6">
       <th:block layout:fragment="content"></th:block>
     </main>
   </div>
@@ -44,6 +43,9 @@
   <!-- Ionicon -->
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+  <!-- HTMX -->
+  <script type="text/javascript" th:src="@{/webjars/htmx.org/dist/htmx.min.js}"></script>
 
 </body>
 </html>

@@ -39,3 +39,47 @@ if (savedAdminTheme === "dark") {
 } else {
   document.documentElement.classList.remove("dark");
 }
+
+function previewAvatar(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    document.getElementById("avatarPreview").src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function togglePassword(inputId, btn) {
+  const input = document.getElementById(inputId);
+  const eyeIcon = btn.querySelector(".eye-icon");
+  const eyeOffIcon = btn.querySelector(".eye-off-icon");
+  if (input.type === "password") {
+    input.type = "text";
+    eyeIcon.classList.add("hidden");
+    eyeOffIcon.classList.remove("hidden");
+  } else {
+    input.type = "password";
+    eyeIcon.classList.remove("hidden");
+    eyeOffIcon.classList.add("hidden");
+  }
+}
+
+function toggleUserDropdown() {
+  var menu = document.getElementById("userDropdownMenu");
+  var chevron = document.getElementById("userDropdownChevron");
+  var isHidden = menu.style.display === "none" || menu.style.display === "";
+  menu.style.display = isHidden ? "block" : "none";
+  chevron.style.transform = isHidden ? "rotate(180deg)" : "rotate(0deg)";
+}
+
+document.addEventListener("click", function (e) {
+  var wrapper = document.getElementById("userDropdownWrapper");
+  var menu = document.getElementById("userDropdownMenu");
+  var chevron = document.getElementById("userDropdownChevron");
+  if (wrapper && !wrapper.contains(e.target)) {
+    menu.style.display = "none";
+    chevron.style.transform = "rotate(0deg)";
+  }
+});

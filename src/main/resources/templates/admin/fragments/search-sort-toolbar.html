@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- SEARCH & SORT TOOLBAR FRAGMENT -->
+<div th:fragment="toolbar"
+     class="bg-light-bg-primary dark:bg-dark-bg-primary rounded-xl shadow-md p-4 transition-colors duration-300">
+
+  <!-- Search and Sort Form -->
+  <form th:action="${actionUrl}" method="get" class="flex flex-col sm:flex-row gap-3">
+
+    <!-- SEARCH INPUT FIELD -->
+    <div class="relative flex-1">
+      <!-- Search icon -->
+      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <ion-icon name="search-outline"
+                  class="text-xl text-light-fg-tertiary dark:text-dark-fg-tertiary transition-colors duration-300"></ion-icon>
+      </div>
+      
+      <!-- Search input with dynamic placeholder -->
+      <input type="text"
+             name="search"
+             th:value="${searchValue}"
+             th:placeholder="${placeholder} ?: #{admin.common.search}"
+             class="w-full pl-10 pr-4 py-2.5 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300">
+    </div>
+
+    <!-- SORT OPTIONS SECTION -->
+    <!-- Only display if sortOptions are provided -->
+    <th:block th:if="${sortOptions != null}">
+      
+      <!-- Sort By Dropdown -->
+      <div class="relative min-w-[175px]">
+        <!-- Sort icon -->
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <ion-icon name="swap-vertical-outline"
+                    class="text-xl text-light-fg-tertiary dark:text-dark-fg-tertiary transition-colors duration-300"></ion-icon>
+        </div>
+        
+        <!-- Sort field selector -->
+        <select name="sortBy"
+                class="w-full pl-10 pr-8 py-2.5 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300 appearance-none cursor-pointer">
+          
+          <!-- Dynamic sort options from model -->
+          <th:block th:each="opt : ${sortOptions}">
+            <option th:value="${opt.value}"
+                    th:text="#{admin.filter.sortBy} + ': ' + ${opt.label}"
+                    th:selected="${currentSort == opt.value}">Sort: Option</option>
+          </th:block>
+        </select>
+        
+        <!-- Dropdown chevron icon -->
+        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+          <ion-icon name="chevron-down-outline"
+                    class="text-lg text-light-fg-tertiary dark:text-dark-fg-tertiary transition-colors duration-300"></ion-icon>
+        </div>
+      </div>
+
+      <!-- Sort Direction Dropdown (Ascending/Descending) -->
+      <div class="relative min-w-[140px]">
+        <!-- Filter icon -->
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <ion-icon name="funnel-outline"
+                    class="text-xl text-light-fg-tertiary dark:text-dark-fg-tertiary transition-colors duration-300"></ion-icon>
+        </div>
+        
+        <!-- Sort direction selector -->
+        <select name="sortDir"
+                class="w-full pl-10 pr-8 py-2.5 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300 appearance-none cursor-pointer">
+          <option value="asc"  th:selected="${currentDir == 'asc'}"  th:text="#{admin.filter.order.asc}">Ascending</option>
+          <option value="desc" th:selected="${currentDir == 'desc'}" th:text="#{admin.filter.order.desc}">Descending</option>
+        </select>
+        
+        <!-- Dropdown chevron icon -->
+        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+          <ion-icon name="chevron-down-outline"
+                    class="text-lg text-light-fg-tertiary dark:text-dark-fg-tertiary transition-colors duration-300"></ion-icon>
+        </div>
+      </div>
+    </th:block>
+
+    <!-- ACTION BUTTONS -->
+    <div class="flex gap-2 flex-shrink-0">
+      
+      <!-- Search Submit Button -->
+      <button type="submit"
+              class="px-4 py-2.5 bg-accent text-white rounded-lg hover:bg-opacity-90 transition-all duration-300 inline-flex items-center gap-1.5">
+        <ion-icon name="search-outline" class="text-lg"></ion-icon>
+        <span th:text="#{admin.search.button}">Search</span>
+      </button>
+      
+      <!--
+        Reset Button
+        Clears all search/sort filters
+        Uses hx-get or regular link based on context
+      -->
+      <a th:href="${resetUrl}"
+         class="px-4 py-2.5 bg-light-action-secondary dark:bg-dark-action-secondary text-light-fg-secondary dark:text-dark-fg-secondary rounded-lg hover:bg-opacity-80 transition-all duration-300 inline-flex items-center gap-1.5">
+        <ion-icon name="refresh-outline" class="text-lg"></ion-icon>
+        <span th:text="#{admin.search.clear}">Reset</span>
+      </a>
+    </div>
+
+  </form>
+</div>
+
+</body>
+</html>

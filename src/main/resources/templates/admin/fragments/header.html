@@ -5,6 +5,8 @@
 <!-- HEADER FRAGMENT -->
 <header th:fragment="header"
   class="bg-light-bg-primary dark:bg-dark-bg-primary shadow-sm sticky top-0 z-30 transition-colors duration-300">
+  
+  <!-- Header Container -->
   <div class="flex items-center justify-between px-6 py-4">
     <button class="admin-sidebar-menu-btn lg:hidden text-2xl text-light-fg-secondary dark:text-dark-fg-secondary hover:text-accent transition-colors duration-300">
       <ion-icon name="menu-outline" class="transition-colors duration-300"></ion-icon>
@@ -24,17 +26,104 @@
         <span class="absolute top-1/2 left-[3px] dark:left-[calc(100%-24px)] w-[21px] h-[21px] bg-white rounded-full -translate-y-1/2 shadow-md z-10 transition-all duration-300"></span>
       </button>
 
-      <div class="flex items-center gap-2">
-        <div class="w-10 h-10 bg-accent rounded-full flex items-center justify-center text-white font-bold transition-colors duration-300"
-             th:text="${currentUser?.initials} ?: 'HL'">
-          HL
-        </div>
-        <div class="hidden sm:block">
-          <p class="text-sm font-medium transition-colors duration-300" th:text="${currentUser?.name} ?: 'Hoang Luong Tran'">Hoang Luong Tran</p>
-          <p class="text-xs text-light-fg-secondary dark:text-dark-fg-secondary transition-colors duration-300"
-             th:text="${currentUser?.role} ?: 'Admin'">
-            Admin
-          </p>
+      <!-- USER DROPDOWN -->
+      <div class="relative" id="userDropdownWrapper">
+        
+        <!-- Dropdown Trigger Button -->
+        <button id="userDropdownBtn"
+                type="button"
+                onclick="toggleUserDropdown()"
+                class="flex items-center gap-2 cursor-pointer rounded-lg px-2 py-1 hover:bg-light-action-secondary dark:hover:bg-dark-action-secondary transition-colors duration-200">
+          
+          <!-- User Avatar with Initials -->
+          <div class="w-10 h-10 bg-accent rounded-full flex items-center justify-center text-white font-bold transition-colors duration-300"
+               th:text="${currentUser?.initials} ?: 'HL'">
+            HL
+          </div>
+          
+          <!-- User Info (hidden on mobile) -->
+          <div class="hidden sm:block text-left">
+            <p class="text-sm font-medium transition-colors duration-300"
+               th:text="${currentUser?.name} ?: 'Hoang Luong Tran'">Hoang Luong Tran</p>
+            <p class="text-xs text-light-fg-secondary dark:text-dark-fg-secondary transition-colors duration-300"
+               th:text="${currentUser?.role} ?: 'Admin'">Admin</p>
+          </div>
+          
+          <!-- Dropdown Chevron Icon -->
+          <ion-icon name="chevron-down-outline"
+                    id="userDropdownChevron"
+                    class="hidden sm:block text-light-fg-secondary dark:text-dark-fg-secondary text-sm transition-transform duration-300">
+          </ion-icon>
+        </button>
+
+        <!--
+          USER DROPDOWN MENU
+          Hidden by default (display:none)
+          Toggled by JavaScript when user clicks trigger
+          Contains user profile links, change password, and logout
+        -->
+        <div id="userDropdownMenu"
+             style="display:none; position:absolute; right:0; top:100%; margin-top:8px; width:208px; z-index:9999; border-radius:12px; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.15);"
+             class="bg-light-bg-primary dark:bg-dark-bg-primary border border-light-border dark:border-dark-border">
+          
+          <!-- MOBILE USER INFO (visible only on mobile) -->
+          <div class="sm:hidden px-4 py-3 border-b border-light-border dark:border-dark-border">
+            <p class="text-sm font-semibold" th:text="${currentUser?.name} ?: 'Hoang Luong Tran'">Hoang Luong Tran</p>
+            <p class="text-xs text-light-fg-secondary dark:text-dark-fg-secondary" th:text="${currentUser?.role} ?: 'Admin'">Admin</p>
+          </div>
+
+          <!-- Dropdown Menu Items -->
+          <ul style="padding:4px 0; margin:0; list-style:none;">
+            
+            <!--
+              UPDATE PROFILE LINK 
+              HTMX-powered link to load profile edit form
+              Uncomment when profile functionality is ready
+            -->
+            <!-- 
+            <li>
+              <a th:hx-get="@{/admin/users/{id}/update(id=${currentUser.id()})}"
+                 hx-target="#main-content"
+                 hx-push-url="true"
+                 hx-swap="innerHTML"
+                 class="flex items-center gap-3 px-4 py-2.5 text-sm text-light-fg-primary dark:text-dark-fg-primary hover:bg-light-action-secondary dark:hover:bg-dark-action-secondary hover:text-accent transition-colors duration-200">
+                <ion-icon name="person-outline" class="text-base shrink-0"></ion-icon>
+                <span th:text="#{admin.header.profile}">Profile</span>
+              </a>
+            </li>
+            -->
+            
+            <!--
+              CHANGE PASSWORD LINK 
+              HTMX-powered link to load change password form
+              Uncomment when change password functionality is ready
+            -->
+            <!-- 
+            <li>
+              <a th:hx-get="@{/admin/users/{id}/change-password(id=${currentUser.id()})}"
+                 hx-target="#main-content"
+                 hx-push-url="true"
+                 hx-swap="innerHTML"
+                 class="flex items-center gap-3 px-4 py-2.5 text-sm text-light-fg-primary dark:text-dark-fg-primary hover:bg-light-action-secondary dark:hover:bg-dark-action-secondary hover:text-accent transition-colors duration-200">
+                <ion-icon name="lock-closed-outline" class="text-base shrink-0"></ion-icon>
+                <span th:text="#{admin.header.changePassword}">Change Password</span>
+              </a>
+            </li>
+            -->
+            
+            <!-- Divider -->
+            <li style="border-top:1px solid rgba(0,0,0,0.08); margin:4px 0;"></li>
+            
+            <!-- Logout Link -->
+            <li>
+              <a th:href="@{/logout}"
+                 class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors duration-200"
+                 th:title="#{admin.header.logout}">
+                <ion-icon name="log-out-outline" class="text-base shrink-0"></ion-icon>
+                <span th:text="#{admin.header.logout}">Logout</span>
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </div>

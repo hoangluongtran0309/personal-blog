@@ -111,14 +111,14 @@ jobs:
               body: `## Build Status\n\n${status}\n\n- Java Version: ${{ env.JAVA_VERSION }}\n- Node Version: ${{ env.NODE_VERSION }}`
             })
 
-  # ==========================================
-  # DOCKER BUILD TEST
-  # ==========================================
+# ==========================================
+# DOCKER BUILD TEST
+# ==========================================
   docker-test:
     name: Docker Build Test
     runs-on: ubuntu-latest
     needs: build-test
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -131,26 +131,74 @@ jobs:
         with:
           context: .
           push: false
+          load: true
           tags: test-image:pr-${{ github.event.pull_request.number }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Test Docker image
+      - name: Create Docker network
+        run: docker network create test-net
+
+      - name: Start PostgreSQL container
         run: |
-          docker build -t test-image:pr-${{ github.event.pull_request.number }} .
-          docker run -d -e PORT=10000 -p 10000:10000 --name test-container test-image:pr-${{ github.event.pull_request.number }}
-          sleep 15
-          
-          if curl -f http://localhost:10000; then
-            echo "✅ Docker container is running successfully"
-            docker stop test-container
-            exit 0
-          else
-            echo "❌ Docker container failed to start properly"
-            docker logs test-container
-            docker stop test-container
-            exit 1
-          fi
+          docker run -d \
+            --name postgres \
+            --network test-net \
+            -e POSTGRES_DB=blogdb \
+            -e POSTGRES_USER=postgres \
+            -e POSTGRES_PASSWORD=secret \
+            postgres:15-alpine
+
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          echo "Waiting for PostgreSQL to be ready..."
+          for i in $(seq 1 30); do
+            if docker exec postgres pg_isready -U postgres; then
+              echo "✅ PostgreSQL is ready"
+              exit 0
+            fi
+            echo "Attempt $i/30 - waiting..."
+            sleep 2
+          done
+          echo "❌ PostgreSQL failed to start"
+          docker logs postgres
+          exit 1
+
+      - name: Run application container
+        run: |
+          docker run -d \
+            --name test-container \
+            --network test-net \
+            -e PORT=10000 \
+            -e DB_HOST=postgres \
+            -e DB_PORT=5432 \
+            -e DB_NAME=blogdb \
+            -e DB_USER=postgres \
+            -e DB_PASSWORD=secret \
+            -p 10000:10000 \
+            test-image:pr-${{ github.event.pull_request.number }}
+
+      - name: Wait for application to start
+        run: |
+          echo "Waiting for application to start..."
+          for i in $(seq 1 20); do
+            if curl -sf http://localhost:10000; then
+              echo "✅ Application is running"
+              exit 0
+            fi
+            echo "Attempt $i/20 - waiting..."
+            sleep 3
+          done
+          echo "❌ Application failed to start"
+          docker logs test-container
+          exit 1
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker stop test-container postgres || true
+          docker rm test-container postgres || true
+          docker network rm test-net || true
 
   # ==========================================
   # SIZE CHECK

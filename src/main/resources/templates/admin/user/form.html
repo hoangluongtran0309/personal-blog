@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layout/main}">
+
+<head>
+  <title th:text="${editMode.name() == 'CREATE'} ? 'Create User - Admin Panel' : 'Edit User - Admin Panel'">
+    User Form - Admin Panel
+  </title>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+
+  <!-- USER FORM SECTION -->
+  <section th:fragment="page-content" id="section-user-form" class="transition-colors duration-300">
+
+    <!-- PAGE HEADER with Back Button -->
+    <div class="flex items-center gap-3 mb-6">
+      
+      <!--
+            HTMX: Back button to return to users list
+           - hx-get       : GET request to load users list
+           - hx-target    : Swap HTML into main content area
+           - hx-push-url  : Update browser URL
+           - hx-swap      : Replace entire content of target
+      -->
+      <a hx-get="/admin/users"
+         hx-target="#main-content"
+         hx-push-url="true"
+         hx-swap="innerHTML"
+         class="p-2 rounded-lg bg-light-action-secondary dark:bg-dark-action-secondary hover:bg-opacity-80 transition-all duration-300 cursor-pointer">
+        <ion-icon name="arrow-back-outline" class="text-xl"></ion-icon>
+      </a>
+      
+      <!-- Page title and subtitle (dynamic based on edit mode) -->
+      <div>
+        <h2 class="text-3xl font-bold transition-colors duration-300"
+            th:text="${editMode.name() == 'CREATE'} ? #{admin.user.form.title.create} : #{admin.user.form.title.edit}">
+          User Form
+        </h2>
+        <p class="text-sm text-light-fg-secondary dark:text-dark-fg-secondary transition-colors duration-300"
+           th:text="${editMode.name() == 'CREATE'} ? #{admin.user.form.subtitle.create} : #{admin.user.form.subtitle.edit}">
+          Fill in the details to create a new user account
+        </p>
+      </div>
+    </div>
+
+    <!-- MAIN FORM CARD -->
+    <div class="max-w-4xl">
+      <div class="bg-light-bg-primary dark:bg-dark-bg-primary rounded-xl shadow-md p-6 transition-colors duration-300">
+
+        <!-- SUCCESS MESSAGE (from URL parameter) -->
+       <div th:if="${param.success}"
+            th:replace="~{admin/fragments/alert :: alert('success', #{admin.user.form.success})}">
+       </div>
+
+        <!-- ERROR MESSAGE (from model) -->
+        <div th:if="${errorMessage}"
+            th:replace="~{admin/fragments/alert :: alert('error', ${errorMessage})}">
+       </div>
+
+        <!--
+          USER FORM with HTMX support
+          Uses conditional th:action and th:hx-post based on edit mode
+          
+          Important fixes applied:
+          1. CREATE action: /admin/users/new (not /admin/users/create)
+          2. UPDATE action: uses ${form.id} (controller adds "form" to model)
+        -->
+        <form th:action="${editMode.name() == 'CREATE'}
+                            ? @{/admin/users/new}
+                            : @{/admin/users/{id}/update(id=${form.id})}"
+              method="post"
+              enctype="multipart/form-data"
+              id="userForm"
+              class="space-y-8"
+              th:hx-post="${editMode.name() == 'CREATE'}
+                    ? @{/admin/users/new}
+                    : @{/admin/users/{id}/update(id=${form.id})}"
+              hx-target="#main-content"
+              hx-swap="innerHTML"
+              hx-push-url="/admin/users"
+              hx-encoding="multipart/form-data">
+
+          <!-- CSRF Token (uncomment when using Spring Security) -->
+          <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/> -->
+
+          <!-- Hidden ID field (only needed for UPDATE mode) -->
+          <input th:if="${editMode.name() == 'UPDATE'}"
+                 type="hidden"
+                 name="id"
+                 th:value="${form?.id}"/>
+
+          <!-- AVATAR SECTION -->
+          <div class="pb-6 border-b border-light-action-secondary dark:border-dark-action-secondary transition-colors duration-300">
+            <h3 class="text-lg font-semibold mb-4 transition-colors duration-300" th:text="#{admin.user.form.avatar}">Profile Picture</h3>
+            
+            <div class="flex items-center gap-6">
+              <!-- Avatar preview container -->
+              <div class="relative">
+                <img id="avatarPreview"
+                     th:src="${editMode.name() == 'UPDATE' && form.avatarBase64Encoded != null}?${'data:image/jpeg;base64,' + form.avatarBase64Encoded}:'/svg/user.svg'"
+                     alt="Avatar"
+                     class="w-24 h-24 rounded-full object-cover border-4 border-light-action-secondary dark:border-dark-action-secondary transition-colors duration-300">
+                
+                <!-- Camera button to trigger file input -->
+                <button type="button"
+                        onclick="document.getElementById('avatarInput').click()"
+                        class="absolute bottom-0 right-0 w-8 h-8 bg-accent text-white rounded-full flex items-center justify-center hover:bg-opacity-90 transition-all duration-300">
+                  <ion-icon name="camera-outline" class="text-lg"></ion-icon>
+                </button>
+              </div>
+              
+              <!-- Upload controls and instructions -->
+              <div class="flex-1">
+                <!-- Hidden file input -->
+                <input type="file"
+                       id="avatarInput"
+                       name="avatar"
+                       accept="image/*"
+                       class="hidden"
+                       onchange="previewAvatar(event)">
+                
+                <!-- Upload button -->
+                <button type="button"
+                        onclick="document.getElementById('avatarInput').click()"
+                        class="px-4 py-2 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg hover:bg-opacity-80 transition-all duration-300 inline-flex items-center gap-2">
+                  <ion-icon name="cloud-upload-outline" class="text-xl"></ion-icon>
+                  <span th:text="#{admin.user.form.avatar.upload}">Upload picture</span>
+                </button>
+                
+                <!-- Helper text -->
+                <p class="text-xs text-light-fg-tertiary dark:text-dark-fg-tertiary mt-2 transition-colors duration-300"
+                   th:text="#{admin.user.form.avatar.help}">
+                  Recommended: Square image, at least 200×200px. Max size: 2MB
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ACCOUNT INFORMATION SECTION -->
+          <div class="space-y-6">
+            <h3 class="text-lg font-semibold transition-colors duration-300" th:text="#{admin.user.form.accountInfo}">Account Information</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+              <!-- Username field -->
+              <div>
+                <label for="username" class="block text-sm font-medium mb-2 transition-colors duration-300">
+                  <span th:text="#{admin.user.form.username}">Username</span> <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <ion-icon name="at-outline" class="text-xl text-light-fg-tertiary dark:text-dark-fg-tertiary transition-colors duration-300"></ion-icon>
+                  </div>
+                  <!--
+                    Username is readonly in UPDATE mode (cannot be changed after creation)
+                    Uses form?.username safe navigation to handle null cases
+                  -->
+                  <input type="text"
+                         id="username"
+                         name="username"
+                         required
+                         th:value="${form?.username}"
+                         th:readonly="${editMode.name() == 'UPDATE'}"
+                         th:classappend="${editMode.name() == 'UPDATE'} ? 'opacity-60 cursor-not-allowed' : ''"
+                         class="w-full pl-10 pr-4 py-3 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300"
+                         th:placeholder="#{admin.user.form.placeholder.username}">
+                </div>
+                <!-- Helper text for UPDATE mode -->
+                <p th:if="${editMode.name() == 'UPDATE'}"
+                   class="text-xs text-light-fg-tertiary dark:text-dark-fg-tertiary mt-1 transition-colors duration-300"
+                   th:text="#{admin.user.form.username.readonly}">
+                  Username cannot be changed after creation.
+                </p>
+              </div>
+
+              <!-- Email field -->
+              <div>
+                <label for="email" class="block text-sm font-medium mb-2 transition-colors duration-300">
+                  <span th:text="#{admin.user.form.email}">Email</span> <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <ion-icon name="mail-outline" class="text-xl text-light-fg-tertiary dark:text-dark-fg-tertiary transition-colors duration-300"></ion-icon>
+                  </div>
+                  <input type="email"
+                         id="email"
+                         name="email"
+                         required
+                         th:value="${form?.email}"
+                         class="w-full pl-10 pr-4 py-3 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300"
+                         th:placeholder="#{admin.user.form.placeholder.email}">
+                </div>
+              </div>
+
+              <!-- First Name field -->
+              <div>
+                <label for="firstname" class="block text-sm font-medium mb-2 transition-colors duration-300">
+                  <span th:text="#{admin.user.form.firstname}">First Name</span> <span class="text-red-500">*</span>
+                </label>
+                <input type="text"
+                       id="firstname"
+                       name="firstname"
+                       required
+                       th:value="${form?.firstname}"
+                       class="w-full px-4 py-3 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300"
+                       th:placeholder="#{admin.user.form.placeholder.firstname}">
+              </div>
+
+              <!-- Last Name field -->
+              <div>
+                <label for="lastname" class="block text-sm font-medium mb-2 transition-colors duration-300">
+                  <span th:text="#{admin.user.form.lastname}">Last Name</span> <span class="text-red-500">*</span>
+                </label>
+                <input type="text"
+                       id="lastname"
+                       name="lastname"
+                       required
+                       th:value="${form?.lastname}"
+                       class="w-full px-4 py-3 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300"
+                       th:placeholder="#{admin.user.form.placeholder.lastname}">
+              </div>
+
+              <!-- Password field - only shown in CREATE mode -->
+              <div th:if="${editMode.name() == 'CREATE'}">
+                <label for="password" class="block text-sm font-medium mb-2 transition-colors duration-300">
+                  <span th:text="#{admin.user.form.password}">Password</span> <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <ion-icon name="lock-closed-outline" class="text-xl text-light-fg-tertiary dark:text-dark-fg-tertiary transition-colors duration-300"></ion-icon>
+                  </div>
+                  <input type="password"
+                         id="password"
+                         name="password"
+                         required
+                         minlength="8"
+                         class="w-full pl-10 pr-12 py-3 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300"
+                         th:placeholder="#{admin.user.form.placeholder.password}">
+                  
+                  <!-- Password visibility toggle button -->
+                  <button type="button"
+                          onclick="togglePassword('password', this)"
+                          class="absolute inset-y-0 right-0 pr-3 flex items-center text-light-fg-tertiary hover:text-accent transition-colors duration-300">
+                    <ion-icon name="eye-outline" class="text-xl eye-icon"></ion-icon>
+                    <ion-icon name="eye-off-outline" class="text-xl eye-off-icon hidden"></ion-icon>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Phone Number field -->
+              <div>
+                <label for="phoneNumber" class="block text-sm font-medium mb-2 transition-colors duration-300" th:text="#{admin.user.form.phone}">Phone</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <ion-icon name="call-outline" class="text-xl text-light-fg-tertiary dark:text-dark-fg-tertiary transition-colors duration-300"></ion-icon>
+                  </div>
+                  <input type="tel"
+                         id="phoneNumber"
+                         name="phoneNumber"
+                         th:value="${form?.phoneNumber}"
+                         class="w-full pl-10 pr-4 py-3 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300"
+                         th:placeholder="#{admin.user.form.placeholder.phone}">
+                </div>
+              </div>
+
+              <!-- Gender select field -->
+              <div>
+                <label for="gender" class="block text-sm font-medium mb-2 transition-colors duration-300" th:text="#{admin.user.form.gender}">Gender</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <ion-icon name="male-female-outline" class="text-xl text-light-fg-tertiary dark:text-dark-fg-tertiary transition-colors duration-300"></ion-icon>
+                  </div>
+                  <select id="gender"
+                          name="gender"
+                          class="w-full pl-10 pr-4 py-3 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300 appearance-none">
+                    <option value="" th:text="#{admin.user.form.gender.select}">Select gender</option>
+                    <option value="MALE"   th:selected="${form?.gender == 'MALE'}"   th:text="#{admin.user.form.gender.male}">Male</option>
+                    <option value="FEMALE" th:selected="${form?.gender == 'FEMALE'}" th:text="#{admin.user.form.gender.female}">Female</option>
+                    <option value="OTHER"  th:selected="${form?.gender == 'OTHER'}"  th:text="#{admin.user.form.gender.other}">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Date of Birth field -->
+              <div>
+                <label for="dateOfBirth" class="block text-sm font-medium mb-2 transition-colors duration-300" th:text="#{admin.user.form.dateOfBirth}">Date of Birth</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <ion-icon name="calendar-outline"
+                              class="text-xl text-light-fg-tertiary dark:text-dark-fg-tertiary transition-colors duration-300"></ion-icon>
+                  </div>
+                  <input type="date"
+                         id="dateOfBirth"
+                         name="dateOfBirth"
+                         th:value="${form?.dateOfBirth}"
+                         class="w-full pl-10 pr-4 py-3 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PROFILE SECTION -->
+          <div class="space-y-6 pt-6 border-t border-light-action-secondary dark:border-dark-action-secondary transition-colors duration-300">
+            <h3 class="text-lg font-semibold transition-colors duration-300" th:text="#{admin.user.form.profile}">Profile</h3>
+
+            <!-- Headline field -->
+            <div>
+              <label for="headline" class="block text-sm font-medium mb-2 transition-colors duration-300" th:text="#{admin.user.form.headline}">Headline</label>
+              <input type="text"
+                     id="headline"
+                     name="headline"
+                     th:value="${form?.headline}"
+                     class="w-full px-4 py-3 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300"
+                     th:placeholder="#{admin.user.form.placeholder.headline}">
+            </div>
+
+            <!-- Bio textarea -->
+            <div>
+              <label for="bio" class="block text-sm font-medium mb-2 transition-colors duration-300" th:text="#{admin.user.form.bio}">Bio</label>
+              <textarea id="bio"
+                        name="bio"
+                        rows="4"
+                        th:text="${form?.bio}"
+                        class="w-full px-4 py-3 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300 resize-none"
+                        th:placeholder="#{admin.user.form.placeholder.bio}"></textarea>
+            </div>
+          </div>
+
+          <!-- LOCATION SECTION -->
+          <div class="space-y-6 pt-6 border-t border-light-action-secondary dark:border-dark-action-secondary transition-colors duration-300">
+            <h3 class="text-lg font-semibold transition-colors duration-300" th:text="#{admin.user.form.location}">Location</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
+              <!-- Street field -->
+              <div>
+                <label for="street" class="block text-sm font-medium mb-2 transition-colors duration-300" th:text="#{admin.user.form.street}">Street</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <ion-icon name="location-outline" class="text-xl text-light-fg-tertiary dark:text-dark-fg-tertiary transition-colors duration-300"></ion-icon>
+                  </div>
+                  <input type="text" 
+                         id="street" 
+                         name="street" 
+                         th:value="${form?.street}"
+                         class="w-full pl-10 pr-4 py-3 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300"
+                         th:placeholder="#{admin.user.form.placeholder.street}">
+                </div>
+              </div>
+
+              <!-- City field -->
+              <div>
+                <label for="city" class="block text-sm font-medium mb-2 transition-colors duration-300" th:text="#{admin.user.form.city}">City</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <ion-icon name="business-outline" class="text-xl text-light-fg-tertiary dark:text-dark-fg-tertiary transition-colors duration-300"></ion-icon>
+                  </div>
+                  <input type="text" 
+                         id="city" 
+                         name="city" 
+                         th:value="${form?.city}"
+                         class="w-full pl-10 pr-4 py-3 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300"
+                         th:placeholder="#{admin.user.form.placeholder.city}">
+                </div>
+              </div>
+
+              <!-- Country field -->
+              <div>
+                <label for="country" class="block text-sm font-medium mb-2 transition-colors duration-300" th:text="#{admin.user.form.country}">Country</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <ion-icon name="globe-outline" class="text-xl text-light-fg-tertiary dark:text-dark-fg-tertiary transition-colors duration-300"></ion-icon>
+                  </div>
+                  <input type="text" 
+                         id="country" 
+                         name="country" 
+                         th:value="${form?.country}"
+                         class="w-full pl-10 pr-4 py-3 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300"
+                         th:placeholder="#{admin.user.form.placeholder.country}">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SOCIAL LINKS SECTION -->
+          <div class="space-y-6 pt-6 border-t border-light-action-secondary dark:border-dark-action-secondary transition-colors duration-300">
+            <h3 class="text-lg font-semibold transition-colors duration-300" th:text="#{admin.user.form.socialLinks}">Social Links</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+              <!-- GitHub URL -->
+              <div>
+                <label for="githubUrl" class="block text-sm font-medium mb-2 transition-colors duration-300">GitHub</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <ion-icon name="logo-github" class="text-xl text-light-fg-tertiary dark:text-dark-fg-tertiary transition-colors duration-300"></ion-icon>
+                  </div>
+                  <input type="url" 
+                         id="githubUrl" 
+                         name="githubUrl" 
+                         th:value="${form?.githubUrl}"
+                         class="w-full pl-10 pr-4 py-3 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300"
+                         placeholder="https://github.com/username">
+                </div>
+              </div>
+
+              <!-- LinkedIn URL -->
+              <div>
+                <label for="linkedinUrl" class="block text-sm font-medium mb-2 transition-colors duration-300">LinkedIn</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <ion-icon name="logo-linkedin" class="text-xl text-light-fg-tertiary dark:text-dark-fg-tertiary transition-colors duration-300"></ion-icon>
+                  </div>
+                  <input type="url" 
+                         id="linkedinUrl" 
+                         name="linkedinUrl" 
+                         th:value="${form?.linkedinUrl}"
+                         class="w-full pl-10 pr-4 py-3 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300"
+                         placeholder="https://linkedin.com/in/username">
+                </div>
+              </div>
+
+              <!-- X (Twitter) URL -->
+              <div>
+                <label for="xUrl" class="block text-sm font-medium mb-2 transition-colors duration-300">X (Twitter)</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <ion-icon name="logo-twitter" class="text-xl text-light-fg-tertiary dark:text-dark-fg-tertiary transition-colors duration-300"></ion-icon>
+                  </div>
+                  <input type="url" 
+                         id="xUrl" 
+                         name="xUrl" 
+                         th:value="${form?.xUrl}"
+                         class="w-full pl-10 pr-4 py-3 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300"
+                         placeholder="https://x.com/username">
+                </div>
+              </div>
+
+              <!-- Facebook URL -->
+              <div>
+                <label for="facebookUrl" class="block text-sm font-medium mb-2 transition-colors duration-300">Facebook</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <ion-icon name="logo-facebook" class="text-xl text-light-fg-tertiary dark:text-dark-fg-tertiary transition-colors duration-300"></ion-icon>
+                  </div>
+                  <input type="url" 
+                         id="facebookUrl" 
+                         name="facebookUrl" 
+                         th:value="${form?.facebookUrl}"
+                         class="w-full pl-10 pr-4 py-3 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300"
+                         placeholder="https://facebook.com/username">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FORM ACTIONS (Submit/Cancel) -->
+          <div class="flex gap-4 pt-6 border-t border-light-action-secondary dark:border-dark-action-secondary transition-colors duration-300">
+            
+            <!-- Submit button - dynamic icon and text based on mode -->
+            <button type="submit"
+                    class="px-6 py-3 bg-accent text-white rounded-lg hover:bg-opacity-90 transition-all duration-300 inline-flex items-center gap-2">
+              <ion-icon th:name="${editMode.name() == 'CREATE'} ? 'person-add-outline' : 'save-outline'" class="text-xl"></ion-icon>
+              <span th:text="${editMode.name() == 'CREATE'} ? 'Create User' : 'Save Changes'">Submit</span>
+            </button>
+            
+            <!--
+               HTMX: Cancel button - returns to users list
+            -->
+            <a hx-get="/admin/users"
+               hx-target="#main-content"
+               hx-push-url="true"
+               hx-swap="innerHTML"
+               class="px-6 py-3 bg-light-action-secondary dark:bg-dark-action-secondary text-light-fg-secondary dark:text-dark-fg-secondary rounded-lg hover:bg-opacity-80 transition-all duration-300 inline-flex items-center gap-2 cursor-pointer">
+              <ion-icon name="close-outline" class="text-xl"></ion-icon>
+              <span th:text="#{admin.user.form.button.cancel}">Cancel</span>
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</div>
+
+</body>
+</html>

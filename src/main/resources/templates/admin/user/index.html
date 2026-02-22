@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layout/main}">
+
+<head>
+  <title th:text="#{admin.users.pageTitle}">
+    User Management - Admin Panel
+  </title>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+  
+  <!-- USERS MANAGEMENT SECTION -->
+  <section th:fragment="page-content" id="section-users" class="transition-colors duration-300">
+
+    <!-- PAGE HEADER -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 class="text-3xl font-bold transition-colors duration-300" th:text="#{admin.users.title}">Users</h2>
+        <p class="text-sm text-light-fg-secondary dark:text-dark-fg-secondary transition-colors duration-300 mt-1"
+           th:text="#{admin.users.subtitle}">
+          Manage all registered user accounts
+        </p>
+      </div>
+      
+      <!--
+           HTMX: Create new user button
+           - hx-get       : GET request to load user creation form
+           - hx-target    : Swap HTML into main content area
+           - hx-push-url  : Update browser URL
+           - hx-swap      : Replace entire content of target
+      -->
+      <a hx-get="/admin/users/new"
+         hx-target="#main-content"
+         hx-push-url="true"
+         hx-swap="innerHTML"
+         class="px-4 py-2.5 bg-accent text-white rounded-lg hover:bg-opacity-90 transition-all duration-300 inline-flex items-center gap-2 cursor-pointer"
+         th:title="#{admin.users.createButton}">
+        <ion-icon name="person-add-outline" class="text-xl"></ion-icon>
+        <span class="font-medium" th:text="#{admin.users.createButton}">Create User</span>
+      </a>
+    </div>
+
+    <!-- TOOLBAR & FILTERS SECTION -->
+    <div class="flex flex-col gap-6">
+      <!-- Search and sort toolbar fragment -->
+      <div class="mb-8" th:replace="~{admin/fragments/search-sort-toolbar :: toolbar}"></div>
+
+      <!-- MAIN TABLE CARD -->
+      <div class="bg-light-bg-primary dark:bg-dark-bg-primary rounded-xl shadow-md transition-colors duration-300 overflow-hidden">
+
+        <!-- RESULTS COUNT -->
+        <div class="px-6 py-3 border-b border-light-action-secondary dark:border-dark-action-secondary transition-colors duration-300">
+          <p class="text-sm text-light-fg-secondary dark:text-dark-fg-secondary transition-colors duration-300"
+             th:text="#{admin.users.showingResults(${users.numberOfElements}, ${users.totalElements})}">
+            Showing <span class="font-semibold">0</span> of <span class="font-semibold">0</span> users
+          </p>
+        </div>
+
+        <!-- EMPTY STATE -->
+        <div th:if="${users.empty}" class="text-center py-16 transition-colors duration-300">
+          <ion-icon name="people-outline"
+                    class="text-6xl text-light-fg-tertiary dark:text-dark-fg-tertiary transition-colors duration-300 mb-3"></ion-icon>
+          <p class="text-light-fg-secondary dark:text-dark-fg-secondary transition-colors duration-300 font-medium"
+             th:text="#{admin.users.noUsersFound}">
+            No users found
+          </p>
+          <p class="text-sm text-light-fg-tertiary dark:text-dark-fg-tertiary transition-colors duration-300 mt-1"
+             th:text="#{admin.users.adjustSearch}">
+            Try adjusting your search or filter
+          </p>
+        </div>
+
+        <!-- USERS TABLE -->
+        <div th:if="${!users.empty}" class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b border-light-action-secondary dark:border-dark-action-secondary transition-colors duration-300">
+                <th class="text-left px-6 py-3 text-xs font-semibold text-light-fg-tertiary dark:text-dark-fg-tertiary uppercase tracking-wider transition-colors duration-300"
+                    th:text="#{admin.users.table.user}">User</th>
+                <th class="text-left px-6 py-3 text-xs font-semibold text-light-fg-tertiary dark:text-dark-fg-tertiary uppercase tracking-wider transition-colors duration-300"
+                    th:text="#{admin.users.table.username}">Username</th>
+                <th class="text-left px-6 py-3 text-xs font-semibold text-light-fg-tertiary dark:text-dark-fg-tertiary uppercase tracking-wider transition-colors duration-300"
+                    th:text="#{admin.users.table.email}">Email</th>
+                <th class="text-left px-6 py-3 text-xs font-semibold text-light-fg-tertiary dark:text-dark-fg-tertiary uppercase tracking-wider transition-colors duration-300"
+                    th:text="#{admin.users.table.gender}">Gender</th>
+                <th class="text-left px-6 py-3 text-xs font-semibold text-light-fg-tertiary dark:text-dark-fg-tertiary uppercase tracking-wider transition-colors duration-300"
+                    th:text="#{admin.users.table.location}">Location</th>
+                <th class="text-left px-6 py-3 text-xs font-semibold text-light-fg-tertiary dark:text-dark-fg-tertiary uppercase tracking-wider transition-colors duration-300"
+                    th:text="#{admin.users.table.role}">Role</th>
+                <th class="text-right px-6 py-3 text-xs font-semibold text-light-fg-tertiary dark:text-dark-fg-tertiary uppercase tracking-wider transition-colors duration-300"
+                    th:text="#{admin.users.table.actions}">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-light-action-secondary dark:divide-dark-action-secondary transition-colors duration-300">
+              <tr th:each="user : ${users.content}"
+                  class="hover:bg-light-action-secondary dark:hover:bg-dark-action-secondary transition-colors duration-300 group">
+
+                <!-- USER AVATAR + FULL NAME -->
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <!-- Avatar display -->
+                    <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-light-action-secondary dark:bg-dark-action-secondary transition-colors duration-300">
+                      <img th:if="${user.avatar() != null}"
+                           th:src="'data:image/png;base64,' + ${user.avatar()}"
+                           th:alt="#{admin.common.avatar}"
+                           class="w-full h-full object-cover">
+                      <div th:if="${user.avatar() == null}"
+                           class="w-full h-full flex items-center justify-center bg-accent text-white font-bold text-sm"
+                           th:title="#{admin.common.initials}">
+                        <span th:text="${#strings.substring(user.firstname(), 0, 1) + #strings.substring(user.lastname(), 0, 1)}">AB</span>
+                      </div>
+                    </div>
+                    <!-- User name and headline -->
+                    <div>
+                      <p class="font-semibold transition-colors duration-300"
+                         th:text="${user.firstname() + ' ' + user.lastname()}">Full Name</p>
+                      <p th:if="${user.headline() != null and !#strings.isEmpty(user.headline())}"
+                         class="text-xs text-light-fg-tertiary dark:text-dark-fg-tertiary transition-colors duration-300 truncate max-w-[180px]"
+                         th:text="${user.headline()}">Headline</p>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- USERNAME with @ prefix -->
+                <td class="px-6 py-4">
+                  <span class="text-sm font-mono bg-light-action-secondary dark:bg-dark-action-secondary px-2 py-0.5 rounded transition-colors duration-300"
+                        th:text="'@' + ${user.username()}">@username</span>
+                </td>
+
+                <!-- EMAIL -->
+                <td class="px-6 py-4">
+                  <span class="text-sm transition-colors duration-300"
+                        th:text="${user.email()}">email@example.com</span>
+                </td>
+
+                <!-- GENDER with icon and styling -->
+                <td class="px-6 py-4">
+                  <span th:if="${user.gender() != null and !#strings.isEmpty(user.gender())}"
+                        class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-colors duration-300"
+                        th:classappend="${user.gender() == 'MALE'}
+                                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400'
+                                        : (${user.gender() == 'FEMALE'}
+                                           ? 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-400'
+                                           : 'bg-light-action-secondary dark:bg-dark-action-secondary text-light-fg-secondary dark:text-dark-fg-secondary')">
+                    <ion-icon th:name="${user.gender() == 'MALE'} ? 'male-outline'
+                                      : (${user.gender() == 'FEMALE'} ? 'female-outline' : 'male-female-outline')"
+                              class="text-xs"></ion-icon>
+                    <span th:text="${user.gender() == 'MALE'} ? #{admin.users.gender.male}
+                                      : (${user.gender() == 'FEMALE'} ? #{admin.users.gender.female} : #{admin.users.gender.other})">Male</span>
+                  </span>
+                  <span th:if="${user.gender() == null or #strings.isEmpty(user.gender())}"
+                        class="text-sm text-light-fg-tertiary dark:text-dark-fg-tertiary transition-colors duration-300">—</span>
+                </td>
+
+                <!-- LOCATION (City, Country) -->
+                <td class="px-6 py-4">
+                  <span th:if="${user.city() != null and !#strings.isEmpty(user.city())}"
+                        class="text-sm text-light-fg-secondary dark:text-dark-fg-secondary transition-colors duration-300"
+                        th:text="${user.city() + (!#strings.isEmpty(user.country()) ? ', ' + user.country() : '')}">City, Country</span>
+                  <span th:if="${user.city() == null or #strings.isEmpty(user.city())}"
+                        class="text-sm text-light-fg-tertiary dark:text-dark-fg-tertiary transition-colors duration-300">—</span>
+                </td>
+
+                <!-- ROLE -->
+                <td class="px-6 py-4">
+                  <span th:if="${user.role() != null and !#strings.isEmpty(user.role())}"
+                        class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 transition-colors duration-300"
+                        th:text="${user.role() == 'ADMIN'} 
+                                ? #{admin.users.role.admin} 
+                                : #{admin.users.role.user}">
+                    User
+                  </span>
+
+                  <span th:if="${user.role() == null or #strings.isEmpty(user.role())}"
+                        class="text-sm text-light-fg-tertiary dark:text-dark-fg-tertiary">—</span>
+                </td>
+
+                <!-- ACTION BUTTONS (View, Edit, Delete) -->
+                <td class="px-6 py-4">
+                  <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                    
+                    <!--
+                         HTMX: View user details
+                         th:hx-get builds dynamic URL with user ID
+                         hx-target swaps content into main area
+                         hx-push-url updates browser URL
+                    -->
+                    <a th:hx-get="@{/admin/users/{id}(id=${user.id()})}"
+                       hx-target="#main-content"
+                       hx-push-url="true"
+                       hx-swap="innerHTML"
+                       class="p-2 rounded-lg bg-light-action-secondary dark:bg-dark-action-secondary hover:text-accent transition-all duration-300 cursor-pointer"
+                       th:title="#{admin.users.action.view}">
+                      <ion-icon name="eye-outline" class="text-lg block"></ion-icon>
+                    </a>
+
+                    <!--
+                         HTMX: Edit user
+                         th:hx-get builds dynamic URL with user ID
+                         hx-target swaps content into main area
+                         hx-push-url updates browser URL
+                    -->
+                    <a th:hx-get="@{/admin/users/{id}/update(id=${user.id()})}"
+                       hx-target="#main-content"
+                       hx-push-url="true"
+                       hx-swap="innerHTML"
+                       class="p-2 rounded-lg bg-light-action-secondary dark:bg-dark-action-secondary hover:text-accent transition-all duration-300 cursor-pointer"
+                       th:title="#{admin.users.action.edit}">
+                      <ion-icon name="create-outline" class="text-lg block"></ion-icon>
+                    </a>
+
+                    <!--
+                         HTMX: Delete user
+                         th:hx-post builds dynamic URL with user ID
+                         hx-target swaps content into main area
+                         hx-push-url updates browser URL
+                    -->
+                    <button th:hx-post="@{/admin/users/{id}/delete(id=${user.id()})}"
+                            hx-target="#main-content"
+                            hx-push-url="true"
+                            hx-swap="innerHTML"
+                            class="p-2 rounded-lg bg-light-action-secondary dark:bg-dark-action-secondary hover:text-red-500 transition-all duration-300 cursor-pointer"
+                            th:title="#{admin.users.action.delete}">
+                      <ion-icon name="trash-outline" class="text-lg block"></ion-icon>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- PAGINATION FRAGMENT -->
+        <div th:replace="~{admin/fragments/pagination :: pagination}"></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>

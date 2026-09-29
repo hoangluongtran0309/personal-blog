@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <body>
+        <th:block th:fragment="footer">
+            <footer class="bg-light-bg-primary dark:bg-dark-bg-primary transition-colors duration-300">
+                <div class="container mx-auto max-w-[1150px] px-4 sm:px-8 py-20 grid gap-[30px] sm:grid-cols-[2fr_1fr_1fr] text-center sm:text-left">
+                    <div>
+                        <a th:href="@{/}" class="inline-block mb-2.5" th:title="${site?.name}">
+                            <img th:src="@{/svg/logo-light.svg}" width="150" height="40" th:alt="${site?.name}" class="logo-light dark:hidden mx-auto sm:mx-0"/>
+                            <img th:src="@{/svg/logo-dark.svg}" width="150" height="40" th:alt="${site?.name}" class="logo-dark hidden dark:block mx-auto sm:mx-0"/>
+                        </a>
+                        <p class="text-light-fg-secondary dark:text-dark-fg-secondary max-w-[300px] mx-auto sm:mx-0 mb-4" th:text="${site?.description}"></p>
+                        <div class="flex justify-center sm:justify-start">
+                            <th:block th:replace="~{client/fragments/sidebar :: social-links}"></th:block>
+                        </div>
+                    </div>
+                    <div th:if="${categories != null and !categories.isEmpty()}">
+                        <p class="text-lg font-bold text-light-fg-primary dark:text-dark-fg-primary mb-[0.4rem]" th:text="#{topics}"></p>
+                        <ul>
+                            <li th:each="category, stat : ${categories}" th:if="${stat.index < 5}" class="mb-[0.3rem]">
+                                <a th:href="@{/category/{slug}(slug=${category.slug.asString()})}" th:text="${category.name}"
+                                    class="text-light-fg-secondary dark:text-dark-fg-secondary hover:text-accent transition-colors duration-300"></a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div th:unless="${categories != null and !categories.isEmpty()}"></div>
+                    <div>
+                        <p class="text-lg font-bold text-light-fg-primary dark:text-dark-fg-primary mb-[0.4rem]" th:text="#{footer.links}"></p>
+                        <ul>
+                            <li class="mb-[0.3rem]">
+                                <a th:href="@{/}" th:text="#{nav.home}" class="text-light-fg-secondary dark:text-dark-fg-secondary hover:text-accent transition-colors duration-300"></a>
+                            </li>
+                            <li class="mb-[0.3rem]">
+                                <a th:href="@{/#articles}" th:text="#{home.latest}" class="text-light-fg-secondary dark:text-dark-fg-secondary hover:text-accent transition-colors duration-300"></a>
+                            </li>
+                            <li class="mb-[0.3rem]" sec:authorize="!hasRole('ADMIN')">
+                                <a th:href="@{/login}" th:text="#{footer.adminLogin}" class="text-light-fg-secondary dark:text-dark-fg-secondary hover:text-accent transition-colors duration-300"></a>
+                            </li>
+                            <li class="mb-[0.3rem]" sec:authorize="hasRole('ADMIN')">
+                                <a th:href="@{/admin}" th:text="#{nav.dashboard}" class="text-light-fg-secondary dark:text-dark-fg-secondary hover:text-accent transition-colors duration-300"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="text-sm text-center p-4 border-t border-light-action-primary dark:border-dark-action-primary text-light-fg-secondary dark:text-dark-fg-secondary">
+                    &copy; <span th:text="#{footer.copyright}"></span>
+                    <span th:text="${#temporals.year(#temporals.createNow())}"></span>
+                    <a th:href="@{/}" class="text-accent font-medium hover:underline" th:text="${site?.author}"></a>
+                </p>
+            </footer>
+        </th:block>
+    </body>
+</html>

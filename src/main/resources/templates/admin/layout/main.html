@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag()}"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <head>
+        <title layout:title-pattern="$CONTENT_TITLE · $LAYOUT_TITLE" th:text="#{admin.title}">Admin</title>
+        <meta name="robots" content="noindex"/>
+        <th:block th:replace="~{shared/fragments/head :: common-head}"></th:block>
+    </head>
+    <body class="bg-light-bg-secondary dark:bg-dark-bg-secondary text-light-fg-primary dark:text-dark-fg-primary overflow-x-hidden transition-colors duration-300">
+        <th:block th:replace="~{admin/fragments/sidebar :: sidebar}"></th:block>
+        <div class="lg:ml-64">
+            <th:block th:replace="~{admin/fragments/header :: header}"></th:block>
+            <main class="p-4 sm:p-6">
+                <th:block layout:fragment="content"></th:block>
+            </main>
+        </div>
+        <th:block th:replace="~{shared/fragments/head :: common-scripts}"></th:block>
+    </body>
+</html>

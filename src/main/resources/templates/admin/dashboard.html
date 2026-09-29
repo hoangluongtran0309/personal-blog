@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag()}"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{admin/layout/main}">
+    <head>
+        <title th:text="#{nav.dashboard}"></title>
+    </head>
+    <body>
+        <th:block layout:fragment="content">
+            <th:block th:replace="~{shared/fragments/alerts :: flashAlerts}"></th:block>
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <div>
+                    <h1 class="text-2xl font-bold" th:text="#{dashboard.heading}"></h1>
+                    <p class="text-sm text-light-fg-secondary dark:text-dark-fg-secondary mt-1" th:text="#{dashboard.description}"></p>
+                </div>
+                <a th:href="@{/admin/articles/new}"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-white rounded-full font-semibold hover:opacity-90 transition-opacity">
+                    <span aria-hidden="true">+</span>
+                    <span th:text="#{article.new}"></span>
+                </a>
+            </div>
+            <div class="bg-light-bg-primary dark:bg-dark-bg-primary rounded-xl shadow-sm border border-light-border dark:border-dark-border overflow-hidden transition-colors duration-300">
+                <div class="px-6 py-4 border-b border-light-border dark:border-dark-border text-sm text-light-fg-secondary dark:text-dark-fg-secondary">
+                    <span th:text="#{dashboard.total}"></span>
+                    <span class="font-semibold text-light-fg-primary dark:text-dark-fg-primary" th:text="${articles.totalElements}"></span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-light-action-secondary dark:bg-dark-action-secondary transition-colors duration-300">
+                            <tr>
+                                <th:block th:replace="~{admin/fragments/tables :: th(#{article.field.title}, '')}"></th:block>
+                                <th:block th:replace="~{admin/fragments/tables :: th(#{table.status}, '')}"></th:block>
+                                <th:block th:replace="~{admin/fragments/tables :: th(#{article.field.category}, 'hidden md:table-cell')}"></th:block>
+                                <th:block th:replace="~{admin/fragments/tables :: th(#{article.field.publishedAt}, 'hidden sm:table-cell')}"></th:block>
+                                <th:block th:replace="~{admin/fragments/tables :: th(#{article.field.updatedAt}, 'hidden lg:table-cell')}"></th:block>
+                                <th:block th:replace="~{admin/fragments/tables :: th(#{table.actions}, 'text-right')}"></th:block>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${articles.isEmpty()}">
+                                <td colspan="6" class="px-6 py-16 text-center">
+                                    <p class="font-medium text-light-fg-tertiary dark:text-dark-fg-tertiary mb-3" th:text="#{dashboard.empty}"></p>
+                                    <a th:href="@{/admin/articles/new}" class="text-accent text-sm hover:underline" th:text="#{article.new}"></a>
+                                </td>
+                            </tr>
+                            <tr th:each="article : ${articles}"
+                                th:with="status=${statuses.get(article.id)}"
+                                class="border-t border-light-border dark:border-dark-border hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary transition-colors duration-300">
+                                <td class="px-6 py-4 max-w-sm">
+                                    <div class="flex items-center gap-3">
+                                        <div class="hidden sm:block w-16 h-11 shrink-0 rounded-md overflow-hidden">
+                                            <th:block th:replace="~{client/fragments/cards :: cover(${article}, 'w-full h-full !min-h-0 text-xl')}"></th:block>
+                                        </div>
+                                        <div class="min-w-0">
+                                            <p class="font-medium line-clamp-2" th:text="${article.title.asString()}"></p>
+                                            <div class="mt-1">
+                                                <th:block th:replace="~{admin/fragments/tables :: slug-code(${article.slug.asString()})}"></th:block>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <th:block th:replace="~{admin/fragments/tables :: status-badge(${status})}"></th:block>
+                                </td>
+                                <td class="px-6 py-4 hidden md:table-cell text-light-fg-secondary dark:text-dark-fg-secondary"
+                                    th:text="${article.category != null ? article.category.name : '—'}"></td>
+                                <td class="px-6 py-4 hidden sm:table-cell whitespace-nowrap text-light-fg-secondary dark:text-dark-fg-secondary">
+                                    <time th:if="${article.publishedAt != null}"
+                                        th:datetime="${article.publishedAt}"
+                                        th:text="${#temporals.format(article.publishedAt, #messages.msg('date.format.dateTime'))}"></time>
+                                    <span th:if="${article.publishedAt == null}">—</span>
+                                </td>
+                                <td class="px-6 py-4 hidden lg:table-cell whitespace-nowrap text-light-fg-secondary dark:text-dark-fg-secondary">
+                                    <time th:datetime="${article.updatedAt}"
+                                        th:text="${#temporals.format(article.updatedAt, #messages.msg('date.format.dateTime'))}"></time>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center justify-end gap-4 whitespace-nowrap">
+                                        <th:block th:if="${status.name() == 'PUBLISHED'}">
+                                            <th:block th:replace="~{admin/fragments/tables :: action-link(@{/articles/{slug}(slug=${article.slug.asString()})}, 'eye-outline', #{action.view}, false)}"></th:block>
+                                        </th:block>
+                                        <th:block th:replace="~{admin/fragments/tables :: action-link(@{/admin/articles/{id}/edit(id=${article.id.asString()})}, 'create-outline', #{action.edit}, false)}"></th:block>
+                                        <th:block th:replace="~{admin/fragments/tables :: action-link(@{/admin/articles/{id}/delete(id=${article.id.asString()})}, 'trash-outline', #{action.delete}, true)}"></th:block>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div th:if="${articles.totalPages > 1}" class="px-6 py-4 border-t border-light-border dark:border-dark-border">
+                    <th:block th:replace="~{shared/fragments/paginations :: pagination(${articles}, '/admin')}"></th:block>
+                </div>
+            </div>
+        </th:block>
+    </body>
+</html>

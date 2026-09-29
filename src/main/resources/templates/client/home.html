@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag()}"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{client/layout/main}">
+    <head>
+        <title th:text="${currentCategory != null} ? ${currentCategory.name}
+            : (${currentTag != null} ? '#' + ${currentTag.name} : #{home.title})"></title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <th:block th:if="${currentCategory == null and currentTag == null and articles.number == 0}">
+                <th:block th:replace="~{client/fragments/hero :: hero}"></th:block>
+            </th:block>
+            <div class="bg-light-bg-secondary dark:bg-dark-bg-secondary py-20 transition-colors duration-300">
+                <div class="container mx-auto px-4 sm:px-8 max-w-[1150px] lg:grid lg:grid-cols-[5fr_2fr] lg:gap-[60px]">
+                    <section id="articles" class="scroll-mt-8 min-w-0">
+                        <th:block th:replace="~{shared/fragments/buttons :: section-header(
+                            ${currentCategory != null ? #messages.msg('home.byCategory', currentCategory.name)
+                            : (currentTag != null ? #messages.msg('home.byTag', currentTag.name) : #messages.msg('home.latest'))})}">
+                        </th:block>
+                        <p th:if="${currentCategory != null or currentTag != null}" class="-mt-8 mb-10 text-center sm:text-left sm:pl-8">
+                            <a th:href="@{/}" class="text-sm text-accent hover:underline" th:text="#{home.clearFilter}"></a>
+                        </p>
+                        <div th:if="${articles.hasContent()}" class="mb-12">
+                            <th:block th:each="article : ${articles.content}">
+                                <th:block th:replace="~{client/fragments/cards :: card(${article})}"></th:block>
+                            </th:block>
+                        </div>
+                        <div th:unless="${articles.hasContent()}"
+                            class="text-center py-20 bg-light-bg-primary dark:bg-dark-bg-primary rounded-[10px] shadow-[0_10px_10px_hsla(0,0%,0%,0.05)]">
+                            <ion-icon name="document-text-outline" class="text-5xl text-light-fg-tertiary dark:text-dark-fg-tertiary mb-3" aria-hidden="true"></ion-icon>
+                            <p class="text-light-fg-secondary dark:text-dark-fg-secondary text-lg" th:text="#{home.empty}"></p>
+                        </div>
+                        <th:block th:replace="~{shared/fragments/paginations :: pagination(${articles}, ${baseUrl})}"></th:block>
+                    </section>
+                    <th:block th:replace="~{client/fragments/sidebar :: sidebar}"></th:block>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

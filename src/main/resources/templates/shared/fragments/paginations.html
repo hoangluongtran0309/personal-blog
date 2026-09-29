@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <th:block th:fragment="pagination(page, baseUrl)">
+            <nav th:if="${page.totalPages > 1}"
+                th:aria-label="#{pagination.label}"
+                class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p class="text-sm text-light-fg-secondary dark:text-dark-fg-secondary shrink-0">
+                    <span class="font-semibold text-light-fg-primary dark:text-dark-fg-primary"
+                        th:text="${page.number * page.size + 1}"></span>
+                    –
+                    <span class="font-semibold text-light-fg-primary dark:text-dark-fg-primary"
+                        th:text="${page.last ? page.totalElements : (page.number + 1) * page.size}"></span>
+                    <span th:text="#{pagination.of}"></span>
+                    <span class="font-semibold text-light-fg-primary dark:text-dark-fg-primary"
+                        th:text="${page.totalElements}"></span>
+                </p>
+                <div class="flex items-center gap-2">
+                    <a th:unless="${page.first}"
+                        th:href="@{${baseUrl}(page=${page.number - 1})}"
+                        th:title="#{pagination.prev}"
+                        rel="prev"
+                        class="h-10 px-4 flex items-center gap-1 rounded-full text-sm font-medium bg-light-fg-secondary text-light-bg-secondary dark:bg-dark-fg-secondary dark:text-dark-bg-secondary hover:bg-accent dark:hover:bg-accent dark:hover:text-white transition-colors duration-300">
+                        <span aria-hidden="true">&lsaquo;</span>
+                        <span th:text="#{pagination.prevShort}"></span>
+                    </a>
+                    <th:block th:with="curr=${page.number}, total=${page.totalPages}, winStart=${curr - 2 < 0 ? 0 : curr - 2}, winEnd=${curr + 2 >= total ? total - 1 : curr + 2}">
+                        <th:block th:each="i : ${#numbers.sequence(winStart, winEnd)}">
+                            <a th:href="@{${baseUrl}(page=${i})}"
+                                th:text="${i + 1}"
+                                th:aria-current="${i == curr ? 'page' : null}"
+                                th:classappend="${i == curr} ? 'bg-accent text-white' : 'bg-light-bg-primary dark:bg-dark-bg-primary text-light-fg-secondary dark:text-dark-fg-secondary hover:text-accent'"
+                                class="hidden sm:flex w-10 h-10 items-center justify-center rounded-full text-sm font-semibold shadow-[0_5px_5px_hsla(0,0%,0%,0.05)] transition-colors duration-300">
+                            </a>
+                        </th:block>
+                    </th:block>
+                    <a th:unless="${page.last}"
+                        th:href="@{${baseUrl}(page=${page.number + 1})}"
+                        th:title="#{pagination.next}"
+                        rel="next"
+                        class="h-10 px-4 flex items-center gap-1 rounded-full text-sm font-medium bg-light-fg-secondary text-light-bg-secondary dark:bg-dark-fg-secondary dark:text-dark-bg-secondary hover:bg-accent dark:hover:bg-accent dark:hover:text-white transition-colors duration-300">
+                        <span th:text="#{pagination.nextShort}"></span>
+                        <span aria-hidden="true">&rsaquo;</span>
+                    </a>
+                </div>
+            </nav>
+        </th:block>
+    </body>
+</html>

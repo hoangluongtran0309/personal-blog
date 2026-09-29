@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <!--/* Blog card from the DevBlog template: cover on the left (sm+), topic chip, title, excerpt, author row. */-->
+        <th:block th:fragment="card(article)">
+            <article th:with="href=@{/articles/{slug}(slug=${article.slug.asString()})}"
+                class="group/card bg-light-bg-primary dark:bg-dark-bg-primary p-[10px] mb-4 rounded-[10px] shadow-[0_10px_10px_hsla(0,0%,0%,0.05)] hover:-translate-y-0.5 hover:shadow-[0_10px_10px_hsla(0,0%,0%,0.1)] sm:grid sm:grid-cols-[3fr_4fr] sm:gap-5 transition-all duration-300">
+                <a th:href="${href}" class="hidden sm:block overflow-hidden rounded-[5px] min-h-[180px]" tabindex="-1" aria-hidden="true">
+                    <th:block th:replace="~{client/fragments/cards :: cover(${article}, 'w-full h-full text-6xl group-hover/card:scale-105 transition-transform duration-500')}"></th:block>
+                </a>
+                <div class="py-2.5 px-[5px]">
+                    <a th:if="${article.category != null}"
+                        th:href="@{/category/{slug}(slug=${article.category.slug.asString()})}"
+                        th:text="${article.category.name}"
+                        class="inline-block text-xs font-semibold px-4 py-1 rounded-[5px] mb-4 bg-light-action-secondary text-light-fg-secondary hover:bg-light-fg-secondary hover:text-light-action-secondary dark:bg-dark-action-primary dark:text-dark-fg-secondary dark:hover:bg-dark-fg-primary dark:hover:text-dark-action-primary transition-colors duration-300">
+                    </a>
+                    <h3 class="mb-4">
+                        <a th:href="${href}"
+                            th:text="${article.title.asString()}"
+                            class="text-xl font-bold leading-[1.4] text-light-fg-primary dark:text-dark-fg-primary hover:underline decoration-2 underline-offset-4">
+                        </a>
+                    </h3>
+                    <p th:text="${article.excerpt}"
+                        class="hidden sm:block text-sm leading-relaxed text-light-fg-secondary dark:text-dark-fg-secondary line-clamp-3 mb-4">
+                    </p>
+                    <th:block th:replace="~{client/fragments/cards :: author-row(${article})}"></th:block>
+                </div>
+            </article>
+        </th:block>
+
+        <!--/* Cover image, or an accent gradient with the topic icon when the article has none. */-->
+        <th:block th:fragment="cover(article, extraClass)">
+            <img th:if="${article.coverImage != null}"
+                th:src="@{${article.coverImage.asString()}}"
+                th:alt="${article.title.asString()}"
+                loading="lazy"
+                th:class="'object-cover ' + ${extraClass}"/>
+            <div th:if="${article.coverImage == null}"
+                th:class="'flex items-center justify-center min-h-[180px] bg-gradient-to-br from-accent to-[hsl(270,65%,62%)] text-white ' + ${extraClass}">
+                <ion-icon th:name="${T(com.juliawalker.personalblog.article.web.TopicIcons).of(article.category)}"
+                    class="opacity-80"></ion-icon>
+            </div>
+        </th:block>
+
+        <th:block th:fragment="author-row(article)">
+            <div class="flex items-center gap-2.5">
+                <div class="hidden sm:block shrink-0 w-14 h-14 p-[3px] rounded-full bg-light-action-primary dark:bg-dark-action-primary">
+                    <img th:src="@{${site?.authorAvatar}}" th:alt="${site?.author}" width="50" height="50" class="w-full h-full rounded-full object-cover"/>
+                </div>
+                <div class="flex flex-wrap sm:flex-col items-center sm:items-start justify-between w-full sm:w-auto gap-x-4">
+                    <a th:href="@{/}" th:text="${site?.author}"
+                        class="text-sm font-bold text-light-fg-secondary dark:text-dark-fg-secondary hover:text-accent transition-colors duration-300"></a>
+                    <p class="flex items-center gap-[5px] text-sm text-light-fg-tertiary dark:text-dark-fg-tertiary">
+                        <time th:datetime="${article.publishedAt}"
+                            th:text="${#temporals.format(article.publishedAt, #messages.msg('date.format.card'))}"></time>
+                        <span class="w-[3px] h-[3px] mx-[3px] rounded-full bg-light-fg-tertiary dark:bg-dark-fg-tertiary" aria-hidden="true"></span>
+                        <ion-icon name="time-outline" aria-hidden="true"></ion-icon>
+                        <span th:text="#{minRead(${article.readingMinutes})}"></span>
+                    </p>
+                </div>
+            </div>
+        </th:block>
+    </body>
+</html>

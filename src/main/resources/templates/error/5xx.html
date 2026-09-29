@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag()}"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{client/layout/main}">
+    <head>
+        <meta name="robots" content="noindex"/>
+        <title th:text="#{error.server.title}"></title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <th:block th:replace="~{shared/fragments/errors :: error-page(${status ?: 500}, #{error.server.title}, #{error.server.message})}"></th:block>
+        </div>
+    </body>
+</html>

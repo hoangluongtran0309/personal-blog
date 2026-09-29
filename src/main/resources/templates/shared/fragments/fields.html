@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <!--/* Fields bound to the enclosing th:object. extraErrorField is for class-level checks such as @AssertTrue. */-->
+        <th:block th:fragment="input-field(field, type, label, icon, placeholder, required, hint, extraErrorField)">
+            <th:block th:with="hasError=${#fields.hasErrors(field) or (extraErrorField != null and #fields.hasErrors(extraErrorField))}">
+                <div>
+                    <label th:for="${field}"
+                        class="block text-sm font-medium mb-2 transition-colors duration-300">
+                        <span th:text="${label}"></span>
+                        <span th:if="${required}" class="text-red-500 ml-0.5">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <ion-icon th:name="${icon}"
+                                th:class="${hasError} ? 'text-xl text-red-400' : 'text-xl text-light-fg-tertiary dark:text-dark-fg-tertiary'">
+                            </ion-icon>
+                        </div>
+                        <input th:type="${type}"
+                            th:field="*{__${field}__}"
+                            th:placeholder="${placeholder}"
+                            th:required="${required}"
+                            th:aria-invalid="${hasError}"
+                            th:aria-describedby="${hint != null} ? ${field + 'Hint'} : null"
+                            autocomplete="off"
+                            th:class="${hasError}
+                            ? 'w-full pl-10 pr-4 py-3 bg-red-50 dark:bg-red-900/10 border border-red-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 transition-all duration-300'
+                            : 'w-full pl-10 pr-4 py-3 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300'"/>
+                    </div>
+                    <p th:if="${hint != null}"
+                        th:id="${field + 'Hint'}"
+                        th:text="${hint}"
+                        class="text-xs text-light-fg-tertiary dark:text-dark-fg-tertiary mt-1.5">
+                    </p>
+                    <p th:if="${#fields.hasErrors(field)}"
+                        th:errors="*{__${field}__}"
+                        class="text-xs text-red-500 mt-1.5">
+                    </p>
+                    <p th:if="${extraErrorField != null and #fields.hasErrors(extraErrorField)}"
+                        th:errors="*{__${extraErrorField}__}"
+                        class="text-xs text-red-500 mt-1.5">
+                    </p>
+                </div>
+            </th:block>
+        </th:block>
+        <th:block th:fragment="textarea-field(field, label, placeholder, required, rows, monospace)">
+            <th:block th:with="hasError=${#fields.hasErrors(field)}">
+                <div>
+                    <label th:for="${field}"
+                        class="block text-sm font-medium mb-2 transition-colors duration-300">
+                        <span th:text="${label}"></span>
+                        <span th:if="${required}" class="text-red-500 ml-0.5">*</span>
+                    </label>
+                    <textarea th:field="*{__${field}__}"
+                        th:rows="${rows}"
+                        th:placeholder="${placeholder}"
+                        th:required="${required}"
+                        th:aria-invalid="${hasError}"
+                        th:classappend="${monospace} ? 'font-mono text-sm leading-relaxed' : ''"
+                        th:class="${hasError}
+                        ? 'w-full px-4 py-3 bg-red-50 dark:bg-red-900/10 border border-red-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 transition-all duration-300 resize-y'
+                        : 'w-full px-4 py-3 bg-light-action-secondary dark:bg-dark-action-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300 resize-y'"></textarea>
+                    <p th:if="${hasError}"
+                        th:errors="*{__${field}__}"
+                        class="text-xs text-red-500 mt-1.5">
+                    </p>
+                </div>
+            </th:block>
+        </th:block>
+    </body>
+</html>

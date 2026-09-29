@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <!--/* Aside from the DevBlog template: Topics, Tags, Let's Talk. */-->
+        <th:block th:fragment="sidebar">
+            <aside class="mt-16 lg:mt-0 space-y-12">
+                <section th:if="${categories != null and !categories.isEmpty()}">
+                    <h2 class="text-2xl font-bold leading-tight text-center mb-8 lg:mb-12 text-light-fg-secondary dark:text-dark-fg-primary" th:text="#{topics}"></h2>
+                    <div class="space-y-4">
+                        <a th:each="category : ${categories}"
+                            th:with="active=${currentCategory != null and currentCategory.equals(category)}"
+                            th:href="@{/category/{slug}(slug=${category.slug.asString()})}"
+                            th:aria-current="${active ? 'page' : null}"
+                            class="group flex items-stretch rounded-[10px] overflow-hidden bg-light-bg-primary dark:bg-dark-bg-primary shadow-[0_5px_5px_hsla(0,0%,0%,0.05)] transition-colors duration-300">
+                            <span th:classappend="${active} ? 'bg-accent text-white' : 'bg-light-action-primary dark:bg-dark-action-primary text-light-fg-secondary dark:text-dark-fg-secondary'"
+                                class="w-[70px] shrink-0 flex items-center justify-center text-[22px] group-hover:bg-accent group-hover:text-white transition-colors duration-300">
+                                <ion-icon th:name="${T(com.juliawalker.personalblog.article.web.TopicIcons).of(category)}" aria-hidden="true"></ion-icon>
+                            </span>
+                            <span class="p-[15px] font-bold text-light-fg-secondary dark:text-dark-fg-secondary" th:text="${category.name}"></span>
+                        </a>
+                    </div>
+                </section>
+                <section th:if="${tags != null and !tags.isEmpty()}">
+                    <h2 class="text-2xl font-bold leading-tight text-center mb-8 lg:mb-12 text-light-fg-secondary dark:text-dark-fg-primary" th:text="#{tags}"></h2>
+                    <div class="flex flex-wrap gap-1 bg-light-bg-primary dark:bg-dark-bg-primary rounded-[10px] p-10 shadow-[0_5px_5px_hsla(0,0%,0%,0.05)]">
+                        <a th:each="tag : ${tags}"
+                            th:with="active=${currentTag != null and currentTag.equals(tag)}"
+                            th:href="@{/tag/{slug}(slug=${tag.slug.asString()})}"
+                            th:text="|#${tag.name}|"
+                            th:aria-current="${active ? 'page' : null}"
+                            th:classappend="${active} ? 'bg-accent text-white' : 'bg-light-action-primary dark:bg-dark-action-primary text-light-fg-secondary dark:text-dark-fg-secondary hover:bg-light-fg-secondary hover:text-light-action-primary dark:hover:bg-dark-fg-secondary dark:hover:text-dark-action-primary'"
+                            class="px-2.5 py-[5px] text-xs font-bold rounded-[5px] transition-colors duration-300">
+                        </a>
+                    </div>
+                </section>
+                <section id="contact" class="scroll-mt-8">
+                    <h2 class="text-2xl font-bold leading-tight text-center mb-8 lg:mb-12 text-light-fg-secondary dark:text-dark-fg-primary" th:text="#{contact.title}"></h2>
+                    <div class="bg-light-bg-primary dark:bg-dark-bg-primary rounded-[10px] p-10 shadow-[0_5px_5px_hsla(0,0%,0%,0.05)] text-center">
+                        <p class="text-light-fg-secondary dark:text-dark-fg-secondary mb-4" th:text="#{contact.text}"></p>
+                        <th:block th:replace="~{client/fragments/sidebar :: social-links}"></th:block>
+                        <a th:unless="${site != null and site.hasContactLinks()}" th:href="@{/}"
+                            class="text-sm text-accent hover:underline" th:text="#{contact.readMore}"></a>
+                    </div>
+                </section>
+            </aside>
+        </th:block>
+
+        <th:block th:fragment="social-links">
+            <ul th:if="${site != null and site.hasContactLinks()}" class="flex justify-center items-center gap-2.5 flex-wrap">
+                <li th:if="${site.hasEmail()}">
+                    <a th:href="${'mailto:' + site.email}" th:title="#{contact.email}" th:aria-label="#{contact.email}"
+                        class="w-[45px] h-[45px] rounded-full flex items-center justify-center text-[22px] bg-light-action-secondary dark:bg-dark-action-secondary text-accent hover:bg-accent hover:text-white transition-colors duration-300">
+                        <ion-icon name="mail-outline" aria-hidden="true"></ion-icon>
+                    </a>
+                </li>
+                <li th:if="${!#strings.isEmpty(site.social.github)}">
+                    <a th:href="${site.social.github}" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"
+                        class="w-[45px] h-[45px] rounded-full flex items-center justify-center text-[22px] bg-light-action-secondary dark:bg-dark-action-secondary text-light-fg-primary dark:text-dark-fg-primary hover:bg-accent hover:text-white transition-colors duration-300">
+                        <ion-icon name="logo-github" aria-hidden="true"></ion-icon>
+                    </a>
+                </li>
+                <li th:if="${!#strings.isEmpty(site.social.linkedin)}">
+                    <a th:href="${site.social.linkedin}" target="_blank" rel="noopener noreferrer" title="LinkedIn" aria-label="LinkedIn"
+                        class="w-[45px] h-[45px] rounded-full flex items-center justify-center text-[22px] bg-light-action-secondary dark:bg-dark-action-secondary text-[hsl(210,90%,40%)] hover:bg-accent hover:text-white transition-colors duration-300">
+                        <ion-icon name="logo-linkedin" aria-hidden="true"></ion-icon>
+                    </a>
+                </li>
+                <li th:if="${!#strings.isEmpty(site.social.facebook)}">
+                    <a th:href="${site.social.facebook}" target="_blank" rel="noopener noreferrer" title="Facebook" aria-label="Facebook"
+                        class="w-[45px] h-[45px] rounded-full flex items-center justify-center text-[22px] bg-light-action-secondary dark:bg-dark-action-secondary text-[hsl(220,46%,48%)] hover:bg-accent hover:text-white transition-colors duration-300">
+                        <ion-icon name="logo-facebook" aria-hidden="true"></ion-icon>
+                    </a>
+                </li>
+                <li th:if="${!#strings.isEmpty(site.social.x)}">
+                    <a th:href="${site.social.x}" target="_blank" rel="noopener noreferrer" title="X" aria-label="X"
+                        class="w-[45px] h-[45px] rounded-full flex items-center justify-center text-[22px] bg-light-action-secondary dark:bg-dark-action-secondary text-[hsl(203,89%,53%)] hover:bg-accent hover:text-white transition-colors duration-300">
+                        <ion-icon name="logo-twitter" aria-hidden="true"></ion-icon>
+                    </a>
+                </li>
+            </ul>
+        </th:block>
+    </body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <!--/* Hero from the DevBlog template: greeting + role on the left, portrait on accent shapes on the right. */-->
+        <th:block th:fragment="hero">
+            <section class="bg-light-bg-primary dark:bg-dark-bg-primary pt-8 pb-20 text-center lg:text-left transition-colors duration-300">
+                <div class="container mx-auto px-4 sm:px-8 max-w-[1150px] lg:grid lg:grid-cols-2 lg:items-center lg:gap-[50px]">
+                    <div>
+                        <h1 class="text-[1.875rem] sm:text-4xl lg:text-5xl font-black leading-[1.6] mb-4 text-light-fg-primary dark:text-dark-fg-primary">
+                            <span th:text="#{hero.greeting}"></span>
+                            <b class="text-accent font-black whitespace-nowrap" th:text="${site?.author}"></b>.
+                            <br/>
+                            <span th:text="${site?.authorRole}"></span>
+                        </h1>
+                        <p class="text-xl font-bold text-light-fg-secondary dark:text-dark-fg-secondary mb-8"
+                            th:text="${#strings.isEmpty(site?.tagline)} ? #{hero.tagline} : ${site.tagline}"></p>
+                        <div class="flex flex-wrap justify-center lg:justify-start gap-4 lg:gap-8">
+                            <a href="#articles"
+                                class="min-w-[10rem] text-center rounded-full bg-accent text-white px-[1.1875rem] py-[0.6875rem] font-medium hover:bg-light-fg-secondary hover:text-light-action-primary dark:hover:bg-dark-fg-secondary dark:hover:text-dark-bg-primary transition-colors duration-300"
+                                th:text="#{hero.readArticles}"></a>
+                            <a th:href="${site != null and site.hasEmail()} ? ${'mailto:' + site.email} : '#contact'"
+                                class="min-w-[10rem] text-center rounded-full bg-light-action-secondary dark:bg-dark-action-secondary text-light-fg-secondary dark:text-dark-fg-secondary px-4 py-2 border-[3px] border-light-fg-tertiary dark:border-dark-fg-tertiary hover:border-accent dark:hover:border-accent font-medium transition-colors duration-300"
+                                th:text="#{hero.contact}"></a>
+                        </div>
+                    </div>
+                    <div class="hidden lg:flex relative justify-center items-center" aria-hidden="true">
+                        <div class="absolute top-1/2 -translate-y-1/2 w-full h-[200px] bg-[url('/images/pattern.png')] bg-contain opacity-20"></div>
+                        <div class="relative z-[2]">
+                            <img th:src="@{${site?.heroImage}}"
+                                th:alt="${site?.author}"
+                                width="407" height="407"
+                                class="relative w-full h-full object-contain rounded-[0_0_280px_230px] translate-x-[10px] -translate-y-[10px]"/>
+                            <div class="absolute top-1/2 left-1/2 w-[90%] h-[90%] rounded-full bg-accent -z-10 -translate-x-1/2 -translate-y-[42%] -rotate-[20deg]"></div>
+                            <div class="absolute top-1/2 left-1/2 w-[92%] h-[92%] rounded-full z-[2] -translate-x-1/2 -translate-y-[42%] -rotate-[20deg] shadow-[inset_0_-30px_0_hsl(214,32%,91%)] dark:shadow-[inset_0_-30px_0_hsl(216,15%,52%)]"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </th:block>
+    </body>
+</html>

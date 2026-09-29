@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <body>
+        <th:block th:fragment="header">
+            <header class="bg-light-bg-primary dark:bg-dark-bg-primary transition-colors duration-300">
+                <div class="container mx-auto px-4 sm:px-8 lg:px-8 max-w-[1150px]">
+                    <nav class="flex justify-between items-center gap-4 py-4 lg:py-8" th:aria-label="#{nav.main}">
+                        <a th:href="@{/}" class="flex items-center gap-3" th:title="${site?.name}">
+                            <img th:src="@{/svg/logo-light.svg}" width="150" height="40" th:alt="${site?.name}" class="logo-light dark:hidden"/>
+                            <img th:src="@{/svg/logo-dark.svg}" width="150" height="40" th:alt="${site?.name}" class="logo-dark hidden dark:block"/>
+                        </a>
+                        <div class="flex items-center gap-4 lg:hidden">
+                            <th:block th:replace="~{shared/fragments/buttons :: language-switch}"></th:block>
+                            <th:block th:replace="~{shared/fragments/buttons :: theme-toggle-mobile}"></th:block>
+                            <th:block th:replace="~{shared/fragments/buttons :: mobile-menu-button}"></th:block>
+                        </div>
+                        <div class="hidden lg:flex items-center gap-8">
+                            <ul class="flex items-center gap-8">
+                                <li>
+                                    <th:block th:replace="~{shared/fragments/buttons :: nav-link(@{/}, #{nav.home}, ${activePage == 'home'})}"></th:block>
+                                </li>
+                                <li sec:authorize="hasRole('ADMIN')">
+                                    <th:block th:replace="~{shared/fragments/buttons :: nav-link(@{/admin}, #{nav.dashboard}, false)}"></th:block>
+                                </li>
+                            </ul>
+                            <th:block th:replace="~{shared/fragments/buttons :: language-switch}"></th:block>
+                            <th:block th:replace="~{shared/fragments/buttons :: theme-toggle-desktop}"></th:block>
+                        </div>
+                        <div class="mobile-nav lg:hidden fixed inset-0 bg-light-bg-primary dark:bg-dark-bg-primary p-8 pt-20 overflow-auto z-50 transform translate-x-full transition-transform duration-500">
+                            <div class="absolute top-5 right-5">
+                                <th:block th:replace="~{shared/fragments/buttons :: mobile-close-button}"></th:block>
+                            </div>
+                            <div class="pb-5 mb-5 border-b border-light-action-primary dark:border-dark-action-primary transition-colors duration-300">
+                                <p class="text-xl font-bold mb-4" th:text="#{nav.main}"></p>
+                                <ul>
+                                    <li class="mb-2 text-xl">
+                                        <th:block th:replace="~{shared/fragments/buttons :: nav-link(@{/}, #{nav.home}, ${activePage == 'home'})}"></th:block>
+                                    </li>
+                                    <li class="mb-2 text-xl" sec:authorize="hasRole('ADMIN')">
+                                        <th:block th:replace="~{shared/fragments/buttons :: nav-link(@{/admin}, #{nav.dashboard}, false)}"></th:block>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div th:if="${categories != null and !categories.isEmpty()}">
+                                <p class="text-xl font-bold mb-4" th:text="#{topics}"></p>
+                                <ul>
+                                    <li th:each="category : ${categories}" class="mb-2 text-xl">
+                                        <th:block th:replace="~{shared/fragments/buttons :: nav-link(
+                                            @{/category/{slug}(slug=${category.slug.asString()})},
+                                            ${category.name},
+                                            ${currentCategory != null and currentCategory.equals(category)})}"></th:block>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </header>
+        </th:block>
+    </body>
+</html>

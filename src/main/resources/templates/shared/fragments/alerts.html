@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <th:block th:fragment="flashAlerts">
+            <div class="space-y-3 mb-6"
+                th:if="${successMessage != null or errorMessage != null}">
+                <th:block th:if="${successMessage != null}">
+                    <th:block th:replace="~{shared/fragments/alerts :: alert('success', ${successMessage})}"></th:block>
+                </th:block>
+                <th:block th:if="${errorMessage != null}">
+                    <th:block th:replace="~{shared/fragments/alerts :: alert('error', ${errorMessage})}"></th:block>
+                </th:block>
+            </div>
+        </th:block>
+        <th:block th:fragment="alert(type, message)">
+            <div role="alert"
+                th:attr="data-alert-type=${type}"
+                th:classappend="${type == 'success'}
+                ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-800 dark:text-green-300'
+                : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-700 dark:text-red-300'"
+                class="flex items-start gap-3 px-4 py-3.5 rounded-xl border transition-colors duration-300">
+                <ion-icon th:name="${type == 'success'} ? 'checkmark-circle-outline' : 'alert-circle-outline'"
+                    class="text-xl shrink-0 mt-0.5">
+                </ion-icon>
+                <p class="text-sm font-medium flex-1 leading-relaxed" th:text="${message}"></p>
+            </div>
+        </th:block>
+    </body>
+</html>

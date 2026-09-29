@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag()}"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <head>
+        <title layout:title-pattern="$CONTENT_TITLE · $LAYOUT_TITLE" th:text="${site?.name}">Personal Blog</title>
+        <th:block th:replace="~{shared/fragments/head :: common-head}"></th:block>
+    </head>
+    <body class="bg-light-bg-primary dark:bg-dark-bg-primary text-light-fg-primary dark:text-dark-fg-primary min-h-screen flex flex-col overflow-x-hidden transition-colors duration-300">
+        <th:block th:replace="~{client/fragments/header :: header}"></th:block>
+        <main class="flex-grow">
+            <th:block layout:fragment="content"></th:block>
+        </main>
+        <th:block th:replace="~{client/fragments/footer :: footer}"></th:block>
+        <th:block th:replace="~{shared/fragments/head :: common-scripts}"></th:block>
+    </body>
+</html>

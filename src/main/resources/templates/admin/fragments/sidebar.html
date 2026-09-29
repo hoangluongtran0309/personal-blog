@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <th:block th:fragment="sidebar">
+            <aside class="mobile-nav fixed inset-0 lg:right-auto lg:w-64 lg:h-full bg-light-bg-primary dark:bg-dark-bg-primary shadow-lg z-40 transform -translate-x-full lg:translate-x-0 overflow-auto transition-all duration-300">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-10">
+                        <a th:href="@{/admin}" th:title="#{nav.dashboard}">
+                            <img th:src="@{/svg/logo-light.svg}" width="150" height="40" th:alt="${site?.name}" class="logo-light dark:hidden"/>
+                            <img th:src="@{/svg/logo-dark.svg}" width="150" height="40" th:alt="${site?.name}" class="logo-dark hidden dark:block"/>
+                        </a>
+                        <div class="lg:hidden">
+                            <th:block th:replace="~{shared/fragments/buttons :: mobile-close-button}"></th:block>
+                        </div>
+                    </div>
+                    <nav th:aria-label="#{nav.admin}">
+                        <ul class="space-y-4">
+                            <li>
+                                <th:block th:replace="~{shared/fragments/buttons :: nav-link(@{/admin}, #{nav.dashboard}, ${activePage == 'dashboard'})}"></th:block>
+                            </li>
+                            <li>
+                                <th:block th:replace="~{shared/fragments/buttons :: nav-link(@{/admin/articles/new}, #{article.new}, ${activePage == 'new'})}"></th:block>
+                            </li>
+                        </ul>
+                    </nav>
+                    <div class="mt-8 pt-6 border-t border-light-action-primary dark:border-dark-action-primary transition-colors duration-300">
+                        <th:block th:replace="~{shared/fragments/buttons :: nav-link(@{/}, #{returnToWebsite}, false)}"></th:block>
+                    </div>
+                </div>
+            </aside>
+        </th:block>
+    </body>
+</html>

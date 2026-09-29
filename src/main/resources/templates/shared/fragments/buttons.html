@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <th:block th:fragment="submit-button(text)">
+            <button type="submit"
+                class="w-full px-6 py-3 bg-accent text-white rounded-full font-semibold hover:bg-light-fg-secondary hover:text-light-action-primary dark:hover:bg-dark-fg-secondary dark:hover:text-dark-bg-primary flex items-center justify-center gap-2 transition-colors duration-300">
+                <span th:text="${text}"></span>
+            </button>
+        </th:block>
+        <th:block th:fragment="nav-button(href, text)">
+            <a th:href="${href}"
+                th:text="${text}"
+                class="min-w-[10rem] px-4 py-2 bg-light-action-secondary dark:bg-dark-action-secondary text-light-fg-secondary dark:text-dark-fg-secondary border-[3px] border-light-fg-tertiary dark:border-dark-fg-tertiary rounded-full hover:border-accent inline-block text-center transition-colors duration-300">
+            </a>
+        </th:block>
+        <th:block th:fragment="nav-link(href, text, active)">
+            <a th:href="${href}"
+                th:text="${text}"
+                th:aria-current="${active == true ? 'page' : null}"
+                th:class="${active == true}
+                ? 'text-accent dark:text-accent font-bold hover:text-accent dark:hover:text-accent transition-colors duration-300'
+                : 'text-light-fg-secondary dark:text-dark-fg-secondary font-bold hover:text-accent dark:hover:text-accent transition-colors duration-300'">
+            </a>
+        </th:block>
+        <th:block th:fragment="language-switch">
+            <div class="flex items-center gap-1 text-sm font-semibold">
+                <a th:href="@{${currentPath}(lang='vi')}"
+                    th:classappend="${#locale.language == 'vi'} ? 'text-accent' : 'text-light-fg-tertiary dark:text-dark-fg-tertiary hover:text-accent'"
+                    th:title="#{language.vi}"
+                    lang="vi"
+                    class="px-1 transition-colors duration-300">VI</a>
+                <span class="text-light-fg-tertiary dark:text-dark-fg-tertiary">/</span>
+                <a th:href="@{${currentPath}(lang='en')}"
+                    th:classappend="${#locale.language == 'en'} ? 'text-accent' : 'text-light-fg-tertiary dark:text-dark-fg-tertiary hover:text-accent'"
+                    th:title="#{language.en}"
+                    lang="en"
+                    class="px-1 transition-colors duration-300">EN</a>
+            </div>
+        </th:block>
+        <th:block th:fragment="theme-toggle-mobile">
+            <button type="button"
+                th:title="#{theme.toggle}"
+                th:aria-label="#{theme.toggle}"
+                class="theme-btn-mobile w-10 h-10 flex justify-center items-center bg-light-action-secondary dark:bg-dark-action-secondary text-light-fg-tertiary dark:text-dark-fg-tertiary rounded-full text-2xl hover:bg-accent hover:text-white transition-colors duration-300">
+                <ion-icon name="moon" class="moon hidden dark:block"></ion-icon>
+                <ion-icon name="sunny" class="sun dark:hidden"></ion-icon>
+            </button>
+        </th:block>
+        <th:block th:fragment="theme-toggle-desktop">
+            <button type="button"
+                th:title="#{theme.toggle}"
+                th:aria-label="#{theme.toggle}"
+                class="theme-btn-desktop relative w-[52px] h-[26px] flex justify-center items-center gap-2.5 rounded-full overflow-hidden bg-gradient-to-br from-[#ff7c6b] to-[#fed54c] dark:from-[#3265ff] dark:to-[#ac14b7] transition-colors duration-300">
+                <ion-icon name="moon" class="text-white text-sm"></ion-icon>
+                <ion-icon name="sunny" class="text-white text-sm"></ion-icon>
+                <span class="absolute top-1/2 left-[3px] dark:left-[calc(100%-24px)] w-[21px] h-[21px] bg-white rounded-full -translate-y-1/2 shadow-md z-10 transition-all duration-300"></span>
+            </button>
+        </th:block>
+        <th:block th:fragment="mobile-menu-button">
+            <button type="button"
+                th:title="#{menu.open}"
+                th:aria-label="#{menu.open}"
+                class="nav-menu-btn w-10 h-10 flex justify-center items-center bg-light-action-secondary dark:bg-dark-action-secondary text-light-fg-tertiary dark:text-dark-fg-tertiary rounded-full text-2xl hover:bg-accent hover:text-white transition-colors duration-300">
+                <ion-icon name="menu-outline"></ion-icon>
+            </button>
+        </th:block>
+        <th:block th:fragment="mobile-close-button">
+            <button type="button"
+                th:title="#{menu.close}"
+                th:aria-label="#{menu.close}"
+                class="nav-close-btn w-10 h-10 flex justify-center items-center bg-light-action-secondary dark:bg-dark-action-secondary text-light-fg-tertiary dark:text-dark-fg-tertiary rounded-full text-2xl hover:bg-accent hover:text-white transition-colors duration-300">
+                <ion-icon name="close-outline"></ion-icon>
+            </button>
+        </th:block>
+        <th:block th:fragment="category-item(href, name, active)">
+            <a th:href="${href}"
+                th:classappend="${active} ? 'bg-accent text-white' : 'bg-light-bg-secondary dark:bg-dark-bg-secondary text-light-fg-secondary dark:text-dark-fg-secondary hover:bg-accent hover:text-white'"
+                class="flex items-center gap-3 px-4 py-2.5 rounded-xl group transition-colors duration-300">
+                <div th:classappend="${active} ? 'bg-white/20 text-white' : 'bg-light-action-secondary dark:bg-dark-action-secondary text-accent group-hover:bg-white/20 group-hover:text-white'"
+                    class="w-9 h-9 flex items-center justify-center rounded-lg overflow-hidden transition-colors duration-300">
+                    <ion-icon name="folder-outline"></ion-icon>
+                </div>
+                <span class="text-sm font-medium" th:text="${name}"></span>
+            </a>
+        </th:block>
+        <th:block th:fragment="tag-item(href, name, active)">
+            <a th:href="${href}"
+                th:text="'#' + ${name}"
+                th:classappend="${active} ? 'bg-accent text-white' : 'bg-light-action-secondary dark:bg-dark-action-secondary text-light-fg-tertiary dark:text-dark-fg-tertiary hover:bg-accent hover:text-white'"
+                class="text-xs px-3 py-1.5 rounded-full transition-colors duration-300">
+            </a>
+        </th:block>
+        <th:block th:fragment="section-header(title)">
+            <h2 class="relative text-2xl font-bold leading-[1.3] mb-12 text-center sm:text-left sm:pl-8 text-light-fg-primary dark:text-dark-fg-primary sm:before:content-[''] sm:before:absolute sm:before:left-0 sm:before:top-0 sm:before:w-[5px] sm:before:h-full sm:before:rounded-[5px] sm:before:bg-light-action-primary dark:sm:before:bg-dark-action-primary"
+                th:text="${title}">
+            </h2>
+        </th:block>
+    </body>
+</html>

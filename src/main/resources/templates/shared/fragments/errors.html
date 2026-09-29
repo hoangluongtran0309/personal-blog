@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <th:block th:fragment="error-page(code, title, message)">
+            <section class="bg-light-bg-secondary dark:bg-dark-bg-secondary transition-colors duration-300 py-24">
+                <div class="container mx-auto px-4 sm:px-8 lg:px-8 max-w-[1150px] text-center">
+                    <p class="text-7xl font-black text-accent mb-4" th:text="${code}"></p>
+                    <h1 class="text-2xl sm:text-3xl font-bold mb-3" th:text="${title}"></h1>
+                    <p class="text-light-fg-secondary dark:text-dark-fg-secondary mb-10 max-w-md mx-auto" th:text="${message}"></p>
+                    <th:block th:replace="~{shared/fragments/buttons :: nav-button(@{/}, #{backToHome})}"></th:block>
+                </div>
+            </section>
+        </th:block>
+    </body>
+</html>

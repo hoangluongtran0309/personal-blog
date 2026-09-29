@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <th:block th:fragment="header">
+            <header class="bg-light-bg-primary dark:bg-dark-bg-primary shadow-sm sticky top-0 z-30 transition-colors duration-300">
+                <div class="flex items-center justify-between gap-4 px-4 sm:px-6 py-4">
+                    <div class="flex items-center gap-4 lg:hidden">
+                        <th:block th:replace="~{shared/fragments/buttons :: mobile-menu-button}"></th:block>
+                        <!--/* Visible links so the admin works on mobile without JavaScript */-->
+                        <a th:href="@{/admin}" th:text="#{nav.dashboard}" class="hidden sm:inline text-sm font-bold text-light-fg-secondary dark:text-dark-fg-secondary hover:text-accent"></a>
+                        <a th:href="@{/admin/articles/new}" th:text="#{article.new}" class="text-sm font-bold text-accent"></a>
+                    </div>
+                    <div class="flex items-center gap-4 ml-auto">
+                        <th:block th:replace="~{shared/fragments/buttons :: language-switch}"></th:block>
+                        <div class="lg:hidden">
+                            <th:block th:replace="~{shared/fragments/buttons :: theme-toggle-mobile}"></th:block>
+                        </div>
+                        <div class="hidden lg:flex">
+                            <th:block th:replace="~{shared/fragments/buttons :: theme-toggle-desktop}"></th:block>
+                        </div>
+                        <div class="hidden sm:flex items-center gap-2">
+                            <div class="w-9 h-9 bg-accent rounded-full flex items-center justify-center text-white font-bold uppercase"
+                                aria-hidden="true"
+                                th:text="${#strings.substring(#authentication.name, 0, 1)}"></div>
+                            <span class="text-sm font-medium" th:text="${#authentication.name}"></span>
+                        </div>
+                        <form th:action="@{/logout}" method="post">
+                            <button type="submit"
+                                class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors duration-300">
+                                <ion-icon name="log-out-outline" class="text-base shrink-0" aria-hidden="true"></ion-icon>
+                                <span th:text="#{logout.action}"></span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </header>
+        </th:block>
+    </body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <th:block th:fragment="th(label, extraClass)">
+            <th scope="col"
+                th:classappend="${extraClass}"
+                class="text-left px-6 py-3 text-xs font-semibold uppercase tracking-wider text-light-fg-secondary dark:text-dark-fg-secondary transition-colors duration-300"
+                th:text="${label}">
+            </th>
+        </th:block>
+        <th:block th:fragment="status-badge(status)">
+            <span th:text="${#messages.msg('article.status.' + status)}"
+                th:classappend="${status.name() == 'PUBLISHED'}
+                ? 'bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400'
+                : (${status.name() == 'SCHEDULED'}
+                ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-300'
+                : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-500/10 dark:text-yellow-400')"
+                class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap">
+            </span>
+        </th:block>
+        <th:block th:fragment="slug-code(slug)">
+            <code class="px-2 py-1 rounded bg-light-action-secondary dark:bg-dark-action-secondary text-xs text-light-fg-secondary dark:text-dark-fg-secondary font-mono transition-colors duration-300"
+                th:text="${slug}">
+            </code>
+        </th:block>
+        <!--/* Text + icon links: they stay usable when the icon script cannot load. */-->
+        <th:block th:fragment="action-link(url, icon, text, danger)">
+            <a th:href="${url}"
+                th:classappend="${danger} ? 'hover:text-red-500' : 'hover:text-accent'"
+                class="inline-flex items-center gap-1 text-sm font-medium text-light-fg-secondary dark:text-dark-fg-secondary transition-colors duration-300">
+                <ion-icon th:name="${icon}" class="text-base" aria-hidden="true"></ion-icon>
+                <span th:text="${text}"></span>
+            </a>
+        </th:block>
+    </body>
+</html>

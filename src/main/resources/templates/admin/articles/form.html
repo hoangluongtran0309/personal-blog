@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag()}"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{admin/layout/main}">
+    <head>
+        <title th:text="${article == null} ? #{article.new} : #{article.edit}"></title>
+    </head>
+    <body>
+        <th:block layout:fragment="content"
+            th:with="formAction=${article == null} ? @{/admin/articles/new} : @{/admin/articles/{id}/edit(id=${article.id.asString()})}">
+            <div class="flex items-center gap-3 mb-6">
+                <a th:href="@{/admin}"
+                    th:title="#{nav.dashboard}"
+                    class="px-3 h-9 flex items-center justify-center rounded-lg text-light-fg-secondary dark:text-dark-fg-secondary hover:bg-light-action-secondary dark:hover:bg-dark-action-secondary hover:text-accent transition-all duration-300">
+                    <span aria-hidden="true">&larr;</span>
+                    <span class="sr-only" th:text="#{nav.dashboard}"></span>
+                </a>
+                <h1 class="text-2xl font-bold" th:text="${article == null} ? #{article.new} : #{article.edit}"></h1>
+            </div>
+            <div th:if="${#fields.hasErrors('${formData.*}')}" class="mb-6">
+                <th:block th:replace="~{shared/fragments/alerts :: alert('error', #{article.form.hasErrors})}"></th:block>
+            </div>
+            <form th:action="${formAction}" th:object="${formData}" method="post" class="space-y-6" novalidate>
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                    <div class="xl:col-span-2 space-y-6">
+                        <div class="bg-light-bg-primary dark:bg-dark-bg-primary rounded-xl shadow-sm border border-light-border dark:border-dark-border p-6 space-y-4 transition-colors duration-300">
+                            <th:block th:replace="~{shared/fragments/fields :: input-field('title', 'text', #{article.field.title}, 'pencil-outline', #{article.field.title.placeholder}, true, null, null)}"></th:block>
+                            <th:block th:replace="~{shared/fragments/fields :: textarea-field('summary', #{article.field.summary}, #{article.field.summary.placeholder}, false, 3, false)}"></th:block>
+                        </div>
+                        <div class="bg-light-bg-primary dark:bg-dark-bg-primary rounded-xl shadow-sm border border-light-border dark:border-dark-border p-6 space-y-4 transition-colors duration-300">
+                            <div class="grid sm:grid-cols-[1fr_12rem] gap-4 items-start">
+                                <th:block th:replace="~{shared/fragments/fields :: input-field('coverImage', 'text', #{article.field.coverImage}, 'image-outline', #{article.field.coverImage.placeholder}, false, #{article.field.coverImage.hint}, 'coverImageValid')}"></th:block>
+                                <div th:if="${article != null}" class="rounded-lg overflow-hidden h-28 sm:mt-7">
+                                    <th:block th:replace="~{client/fragments/cards :: cover(${article}, 'w-full h-full !min-h-0 text-4xl')}"></th:block>
+                                </div>
+                            </div>
+                            <details class="text-sm">
+                                <summary class="cursor-pointer text-accent font-medium" th:text="#{article.field.coverImage.gallery}"></summary>
+                                <ul class="grid grid-cols-2 sm:grid-cols-5 gap-3 mt-3">
+                                    <li th:each="i : ${#numbers.sequence(1, 10)}" class="text-center">
+                                        <img th:src="@{/images/blog-{n}.png(n=${i})}" alt="" loading="lazy" class="w-full h-16 object-cover rounded-md mb-1"/>
+                                        <code class="text-xs text-light-fg-secondary dark:text-dark-fg-secondary select-all" th:text="|/images/blog-${i}.png|"></code>
+                                    </li>
+                                </ul>
+                            </details>
+                        </div>
+                        <div class="bg-light-bg-primary dark:bg-dark-bg-primary rounded-xl shadow-sm border border-light-border dark:border-dark-border p-6 transition-colors duration-300">
+                            <th:block th:replace="~{shared/fragments/fields :: textarea-field('content', #{article.field.content}, #{article.field.content.placeholder}, true, 22, true)}"></th:block>
+                            <p class="text-xs text-light-fg-tertiary dark:text-dark-fg-tertiary mt-2" th:text="#{article.field.content.hint}"></p>
+                        </div>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="bg-light-bg-primary dark:bg-dark-bg-primary rounded-xl shadow-sm border border-light-border dark:border-dark-border p-6 space-y-4 transition-colors duration-300">
+                            <h2 class="text-base font-semibold" th:text="#{article.form.publishing}"></h2>
+                            <th:block th:replace="~{shared/fragments/fields :: input-field('publishedAt', 'datetime-local', #{article.field.publishedAt}, 'calendar-outline', null, false, #{article.field.publishedAt.hint}, null)}"></th:block>
+                            <p th:if="${status != null}" class="text-sm">
+                                <span class="text-light-fg-secondary dark:text-dark-fg-secondary" th:text="#{article.field.status}"></span>
+                                <th:block th:replace="~{admin/fragments/tables :: status-badge(${status})}"></th:block>
+                            </p>
+                        </div>
+                        <div class="bg-light-bg-primary dark:bg-dark-bg-primary rounded-xl shadow-sm border border-light-border dark:border-dark-border p-6 space-y-4 transition-colors duration-300">
+                            <h2 class="text-base font-semibold" th:text="#{article.form.details}"></h2>
+                            <th:block th:replace="~{shared/fragments/fields :: input-field('slug', 'text', #{article.field.slug}, 'link-outline', #{article.field.slug.placeholder}, false, #{article.field.slug.hint}, null)}"></th:block>
+                            <th:block th:replace="~{shared/fragments/fields :: input-field('category', 'text', #{article.field.category}, 'folder-outline', #{article.field.category.placeholder}, false, null, 'categoryValid')}"></th:block>
+                            <th:block th:replace="~{shared/fragments/fields :: input-field('tags', 'text', #{article.field.tags}, 'pricetags-outline', #{article.field.tags.placeholder}, false, #{article.field.tags.hint}, 'tagsValid')}"></th:block>
+                        </div>
+                        <div class="flex flex-col gap-3">
+                            <th:block th:replace="~{shared/fragments/buttons :: submit-button(${article == null} ? #{article.form.create} : #{article.form.save})}"></th:block>
+                            <a th:href="@{/admin}" class="text-center text-sm text-light-fg-secondary dark:text-dark-fg-secondary hover:text-accent" th:text="#{action.cancel}"></a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </th:block>
+    </body>
+</html>
